@@ -8,9 +8,10 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Three.js & OrbitControls Libraries -->
+    <!-- Three.js, OrbitControls, and CSS3DRenderer Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS3DRenderer.js"></script>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,21 +25,41 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow: hidden;
-            background-color: #050508;
+            background-color: #030305;
             color: #f3f4f6;
+            margin: 0;
+            padding: 0;
         }
 
         .code-font {
             font-family: 'Fira Code', monospace;
         }
 
-        /* Modern Glassmorphism Styling */
+        /* 3D Render Canvas Layers */
+        #webgl-container, #css3d-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #webgl-container {
+            z-index: 1;
+            pointer-events: none; /* Let CSS3D objects & HUD receive events */
+        }
+
+        #css3d-container {
+            z-index: 2;
+        }
+
+        /* Glassmorphism Styling for Overlay HUD */
         .glass-panel {
-            background: rgba(12, 14, 24, 0.8);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            background: rgba(10, 12, 20, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
         .glass-button {
@@ -51,39 +72,14 @@
         .glass-button:hover {
             background: rgba(239, 68, 68, 0.85);
             border-color: rgba(239, 68, 68, 1);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
             transform: translateY(-2px);
         }
 
         .glass-button.active {
             background: rgba(239, 68, 68, 0.95);
             border-color: #ff4d4d;
-            box-shadow: 0 0 25px rgba(255, 77, 77, 0.7);
-        }
-
-        /* 3D Canvas Canvas Position */
-        #canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* YouTube Screen Mounted on 3D Stage */
-        #youtube-screen-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -52%);
-            z-index: 2;
-            pointer-events: auto;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 60px rgba(239, 68, 68, 0.35);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 22px rgba(255, 77, 77, 0.7);
         }
 
         /* Scrollbar Styling */
@@ -104,16 +100,12 @@
 </head>
 <body class="w-screen h-screen overflow-hidden select-none">
 
-    <!-- 3D WebGL Canvas Container -->
-    <div id="canvas-container"></div>
+    <!-- 3D Scene Viewports -->
+    <div id="css3d-container"></div>
+    <div id="webgl-container"></div>
 
-    <!-- Screen Frame overlaying YouTube Video Screen -->
-    <div id="youtube-screen-container" class="w-[854px] h-[480px] max-w-[92vw] max-h-[52vh] sm:max-h-[62vh] md:w-[800px] md:h-[450px] lg:w-[960px] lg:h-[540px]">
-        <div id="yt-player-placeholder" class="w-full h-full"></div>
-    </div>
-
-    <!-- Top Navigation Header -->
-    <header class="fixed top-0 left-0 right-0 z-10 p-4 flex justify-between items-center pointer-events-none">
+    <!-- UI Overlay Header -->
+    <header class="fixed top-0 left-0 right-0 z-20 p-4 flex justify-between items-center pointer-events-none">
         <!-- Logo Badge -->
         <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-3 pointer-events-auto shadow-2xl">
             <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-600/50">
@@ -121,11 +113,11 @@
             </div>
             <div>
                 <h1 class="font-extrabold text-sm sm:text-base tracking-wider bg-gradient-to-r from-white via-gray-200 to-red-400 bg-clip-text text-transparent">YOUTUBE 3D WORLD</h1>
-                <p class="text-[10px] text-gray-400 code-font">Engine: C++ / WebAssembly Sim + Three.js</p>
+                <p class="text-[10px] text-gray-400 code-font">True 3D Spatial Video Engine (CSS3D + WebGL)</p>
             </div>
         </div>
 
-        <!-- URL Search Input Bar -->
+        <!-- URL Input Bar -->
         <div class="glass-panel px-3 py-1.5 rounded-2xl flex items-center gap-2 pointer-events-auto w-full max-w-md mx-4 shadow-2xl">
             <i class="fa-solid fa-link text-red-500 ml-2 text-sm"></i>
             <input type="text" id="video-url-input" placeholder="Masukkan URL YouTube atau ID Video..." 
@@ -136,37 +128,37 @@
             </button>
         </div>
 
-        <!-- Camera Angle Controls -->
+        <!-- Camera Preset Selector Buttons -->
         <div class="glass-panel p-1.5 rounded-2xl flex gap-1 pointer-events-auto hidden sm:flex">
-            <button id="btn-cam-cinema" class="glass-button active text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Fokus Layar">
+            <button id="btn-cam-cinema" class="glass-button active text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Fokus Layar Cinema 3D">
                 <i class="fa-solid fa-film text-red-400"></i> Cinema
             </button>
-            <button id="btn-cam-mascot" class="glass-button text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Fokus Mascot Bot">
+            <button id="btn-cam-mascot" class="glass-button text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Fokus Character Mascot">
                 <i class="fa-solid fa-robot text-cyan-400"></i> Mascot
             </button>
-            <button id="btn-cam-free" class="glass-button text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Orbit Bebas 360°">
+            <button id="btn-cam-free" class="glass-button text-xs font-medium px-3 py-1.5 rounded-xl text-white flex items-center gap-1.5" title="Kamera Orbit Free Move 360°">
                 <i class="fa-solid fa-globe text-emerald-400"></i> Orbit
             </button>
         </div>
     </header>
 
-    <!-- Sidebar Playlist & Lighting Controllers -->
-    <aside class="fixed right-4 top-24 bottom-6 w-80 z-10 glass-panel rounded-3xl p-4 flex flex-col gap-4 pointer-events-auto hidden md:flex">
+    <!-- Sidebar Playlist & Lighting Controls -->
+    <aside class="fixed right-4 top-24 bottom-6 w-80 z-20 glass-panel rounded-3xl p-4 flex flex-col gap-4 pointer-events-auto hidden md:flex">
         
         <!-- Playlist Header -->
         <div class="flex items-center justify-between border-b border-gray-700/60 pb-3">
             <h2 class="text-xs font-bold text-gray-200 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-layer-group text-red-500"></i> Playlist Rekomendasi
             </h2>
-            <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full border border-red-500/30 font-semibold">Active Embeds</span>
+            <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full border border-red-500/30 font-semibold">3D Sync</span>
         </div>
 
-        <!-- Video Playlist Items Container -->
+        <!-- Video Playlist Container -->
         <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="playlist-container">
-            <!-- Populated via JavaScript -->
+            <!-- Dynamically generated via JS -->
         </div>
 
-        <!-- Scene Lighting Mood Controller -->
+        <!-- Scene Mood Lighting Picker -->
         <div class="border-t border-gray-700/60 pt-3">
             <h3 class="text-xs font-semibold text-gray-300 mb-2.5 flex items-center gap-2">
                 <i class="fa-solid fa-wand-magic-sparkles text-yellow-400"></i> Mood Pencahayaan 3D
@@ -192,26 +184,26 @@
         </div>
     </aside>
 
-    <!-- Bottom Left HUD: C++ WASM Simulator & Mascot Action Triggers -->
-    <div class="fixed left-4 bottom-6 w-96 z-10 glass-panel rounded-3xl p-4 pointer-events-auto hidden lg:block">
+    <!-- Bottom Left HUD: C++ Engine Console & Mascot Trigger Buttons -->
+    <div class="fixed left-4 bottom-6 w-96 z-20 glass-panel rounded-3xl p-4 pointer-events-auto hidden lg:block">
         <div class="flex items-center justify-between mb-2 pb-2 border-b border-gray-800">
             <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <h3 class="text-xs font-bold text-emerald-400 code-font">C++ WASM Engine Console</h3>
+                <h3 class="text-xs font-bold text-emerald-400 code-font">C++ WASM Mascot Engine</h3>
             </div>
             <span class="text-[10px] code-font text-gray-400 bg-black/50 px-2 py-0.5 rounded border border-gray-800">60 FPS</span>
         </div>
 
-        <!-- Live C++ WebAssembly State Machine Console -->
+        <!-- C++ Console Output Log -->
         <div class="bg-black/80 rounded-2xl p-3 code-font text-[11px] text-gray-300 border border-gray-800 h-28 overflow-hidden flex flex-col justify-end">
             <div id="cpp-console-log" class="space-y-1">
-                <p class="text-blue-400">[Init] C++ Physics & Mesh Engine compiled to WebAssembly.</p>
-                <p class="text-emerald-400">[Status] Mascot Bot Skeleton Loaded (24 Joints).</p>
-                <p class="text-yellow-400">[AudioSync] Listening to YouTube Player State...</p>
+                <p class="text-blue-400">[Init] Dual 3D Rendering Engine (CSS3D + WebGL) started.</p>
+                <p class="text-emerald-400">[Status] Mascot Bot Skeleton & 3D Screen Loaded.</p>
+                <p class="text-yellow-400">[AudioSync] Waiting for YouTube player event...</p>
             </div>
         </div>
 
-        <!-- Mascot Manual Action Buttons -->
+        <!-- Mascot Character Manual Controls -->
         <div class="flex items-center gap-2 mt-3">
             <button onclick="triggerMascotAction('dance')" class="flex-1 glass-button py-2 rounded-xl text-xs font-semibold text-gray-200 hover:text-white flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-music text-purple-400"></i> Joget
@@ -225,310 +217,347 @@
         </div>
     </div>
 
-    <!-- Notification Toast Element -->
+    <!-- Notification Toast Popup -->
     <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-30 glass-panel px-5 py-2.5 rounded-2xl text-xs font-semibold text-white border border-red-500/40 shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
         <i class="fa-solid fa-circle-info text-red-400"></i>
         <span id="toast-message">Memuat video...</span>
     </div>
 
     <script>
-        // --- 1. GUARANTEED EMBEDDABLE YOUTUBE VIDEO PLAYLIST ---
+        // --- 1. GUARANTEED WORKING EMBEDDABLE YOUTUBE VIDEOS ---
         const VALID_PRESET_VIDEOS = [
-            { id: "YE7VzlLtp-4", title: "Big Buck Bunny 3D Animation", category: "Blender Open Movie", duration: "09:56" },
+            { id: "YE7VzlLtp-4", title: "Big Buck Bunny 3D Animation", category: "Blender 3D Movie", duration: "09:56" },
             { id: "R6MlUcmgwu8", title: "Tears of Steel - Sci-Fi VFX", category: "Sci-Fi Film", duration: "12:14" },
             { id: "gWw23EYM9VM", title: "Sintel - Open 3D Fantasy Film", category: "3D Animation", duration: "14:48" },
             { id: "eOrN4fip1zA", title: "Blender 3D Animation Reel", category: "3D Showcase", duration: "02:15" },
             { id: "jfKfPfyJRdk", title: "Lofi Hip Hop Radio Beats", category: "Lo-Fi Music", duration: "LIVE" }
         ];
 
-        // --- 2. GLOBAL VARIABLES ---
-        let scene, camera, renderer, controls;
+        // --- 2. GLOBAL SYSTEM VARIABLES ---
+        let sceneGL, sceneCSS, camera, rendererGL, rendererCSS, controls;
         let mascotGroup, mascotHead, mascotBody, leftArm, rightArm, leftEye, rightEye;
         let ambientLight, pointLight1, pointLight2, screenGlowLight;
-        let ytPlayer = null;
-        let currentMascotState = 'idle'; // 'idle', 'dance', 'wave', 'jump'
+        let currentMascotState = 'idle';
         let mascotActionTimer = null;
 
-        // --- 3. YOUTUBE IFRAME PLAYER API INTEGRATION ---
-        function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('yt-player-placeholder', {
-                videoId: VALID_PRESET_VIDEOS[0].id,
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 1,
-                    'rel': 0,
-                    'modestbranding': 1,
-                    'enablejsapi': 1,
-                    'origin': window.location.origin
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            logCppEngine("[YouTubeAPI] Player Initialized and Ready.");
-        }
-
-        function onPlayerStateChange(event) {
-            // Event states: PLAYING (1), PAUSED (2), BUFFERING (3)
-            if (event.data === YT.PlayerState.PLAYING) {
-                logCppEngine("[AudioSync] Video PLAYING -> Mascot Dance Sync!");
-                triggerMascotAction('dance');
-            } else if (event.data === YT.PlayerState.PAUSED) {
-                logCppEngine("[AudioSync] Video PAUSED -> Mascot Waving.");
-                triggerMascotAction('wave');
-            }
-        }
-
-        // --- 4. THREE.JS 3D WORLD CREATION ---
+        // --- 3. THREE.JS 3D SCENE & CSS3D EMBEDDED SCREEN INITIALIZATION ---
         function init3DWorld() {
-            const container = document.getElementById('canvas-container');
+            // Container References
+            const containerGL = document.getElementById('webgl-container');
+            const containerCSS = document.getElementById('css3d-container');
 
-            // Scene & Fog Setup
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050508, 0.035);
+            // Scenes
+            sceneGL = new THREE.Scene();
+            sceneGL.fog = new THREE.FogExp2(0x030305, 0.02);
+            sceneCSS = new THREE.Scene();
 
             // Camera Setup
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.8, 7.5);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 100, 1100);
 
-            // WebGL Renderer Setup
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            container.appendChild(renderer.domElement);
+            // WebGL Renderer Setup (For 3D Stage, Mascot, Lighting, Bezel Frame)
+            rendererGL = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            rendererGL.setSize(window.innerWidth, window.innerHeight);
+            rendererGL.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            rendererGL.shadowMap.enabled = true;
+            rendererGL.shadowMap.type = THREE.PCFSoftShadowMap;
+            rendererGL.toneMapping = THREE.ACESFilmicToneMapping;
+            containerGL.appendChild(rendererGL.domElement);
 
-            // Orbit Controls
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            // CSS3D Renderer Setup (For True Spatial 3D Embedded Iframe)
+            rendererCSS = new THREE.CSS3DRenderer();
+            rendererCSS.setSize(window.innerWidth, window.innerHeight);
+            containerCSS.appendChild(rendererCSS.domElement);
+
+            // Orbit Controls Attached to CSS3D Renderer Layer
+            controls = new THREE.OrbitControls(camera, rendererCSS.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.maxPolarAngle = Math.PI / 2 + 0.05;
-            controls.minDistance = 3;
-            controls.maxDistance = 18;
-            controls.target.set(0, 1.8, -5); // Target screen center initially
+            controls.minDistance = 300;
+            controls.maxDistance = 1800;
+            controls.target.set(0, 100, 0);
 
-            // Construct 3D Theater Stage
-            buildTheaterRoom();
+            // Build 3D Stage Environment
+            build3DEnvironment();
 
-            // Construct Mascot Robot Character
-            createMascotRobot();
+            // Construct 3D Spatial YouTube Screen Frame
+            create3DSpatialVideoScreen(VALID_PRESET_VIDEOS[0].id);
 
-            // Lighting Setup
+            // Create 3D Mascot Robot Character
+            create3DMascotRobot();
+
+            // Setup Scene Lighting
             setupLighting();
 
-            // Handle Resize
+            // Window Resize Listener
             window.addEventListener('resize', onWindowResize);
         }
 
-        function buildTheaterRoom() {
-            // Reflective Metallic Floor
-            const floorGeo = new THREE.PlaneGeometry(60, 60);
+        function build3DEnvironment() {
+            // Reflective Metallic Grid Floor
+            const floorGeo = new THREE.PlaneGeometry(3000, 3000);
             const floorMat = new THREE.MeshStandardMaterial({
-                color: 0x0c0e18,
-                roughness: 0.25,
-                metalness: 0.85
+                color: 0x080a12,
+                roughness: 0.3,
+                metalness: 0.8
             });
             const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
-            floor.position.y = -2;
+            floor.position.y = -250;
             floor.receiveShadow = true;
-            scene.add(floor);
+            sceneGL.add(floor);
 
-            // Neon Grid Overlay
-            const gridHelper = new THREE.GridHelper(60, 40, 0xef4444, 0x1f2937);
-            gridHelper.position.y = -1.99;
-            scene.add(gridHelper);
+            // Grid Overlay
+            const grid = new THREE.GridHelper(3000, 60, 0xef4444, 0x1f2937);
+            grid.position.y = -249;
+            sceneGL.add(grid);
 
-            // Sci-Fi Back Wall
-            const wallGeo = new THREE.PlaneGeometry(60, 30);
+            // Cyber Back Wall
+            const wallGeo = new THREE.PlaneGeometry(3000, 1500);
             const wallMat = new THREE.MeshStandardMaterial({
-                color: 0x080a10,
-                roughness: 0.7,
-                metalness: 0.3
+                color: 0x04050a,
+                roughness: 0.8,
+                metalness: 0.2
             });
             const backWall = new THREE.Mesh(wallGeo, wallMat);
-            backWall.position.set(0, 10, -15);
-            scene.add(backWall);
+            backWall.position.set(0, 500, -800);
+            sceneGL.add(backWall);
 
-            // 3D Screen Border Frame in Scene
-            const frameGeo = new THREE.BoxGeometry(11.2, 6.4, 0.4);
-            const frameMat = new THREE.MeshStandardMaterial({
-                color: 0x1a1d2d,
-                metalness: 0.9,
-                roughness: 0.1
-            });
-            const screenFrame = new THREE.Mesh(frameGeo, frameMat);
-            screenFrame.position.set(0, 1.8, -5);
-            screenFrame.castShadow = true;
-            scene.add(screenFrame);
-
-            // Glowing Outer Edge for Screen
-            const edgeGeo = new THREE.BoxGeometry(11.4, 6.6, 0.2);
-            const edgeMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
-            const screenEdge = new THREE.Mesh(edgeGeo, edgeMat);
-            screenEdge.position.set(0, 1.8, -5.1);
-            scene.add(screenEdge);
-
-            // Podium for Mascot Robot Character
-            const podiumGeo = new THREE.CylinderGeometry(1.8, 2.2, 0.6, 32);
+            // Mascot Robot Stage Podium
+            const podiumGeo = new THREE.CylinderGeometry(140, 180, 50, 32);
             const podiumMat = new THREE.MeshStandardMaterial({
                 color: 0x111827,
                 metalness: 0.8,
                 roughness: 0.2
             });
             const podium = new THREE.Mesh(podiumGeo, podiumMat);
-            podium.position.set(4, -1.7, 0);
+            podium.position.set(450, -225, 100);
             podium.receiveShadow = true;
             podium.castShadow = true;
-            scene.add(podium);
+            sceneGL.add(podium);
 
-            // Glowing Ring around Podium
-            const ringGeo = new THREE.TorusGeometry(1.85, 0.05, 16, 100);
+            // Glowing Podium Ring
+            const ringGeo = new THREE.TorusGeometry(145, 4, 16, 100);
             const ringMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
             const podiumRing = new THREE.Mesh(ringGeo, ringMat);
             podiumRing.rotation.x = Math.PI / 2;
-            podiumRing.position.set(4, -1.4, 0);
-            scene.add(podiumRing);
+            podiumRing.position.set(450, -200, 100);
+            sceneGL.add(podiumRing);
         }
 
-        // --- 5. MASCOT ROBOT CHARACTER GEOMETRY ---
-        function createMascotRobot() {
-            mascotGroup = new THREE.Group();
-            mascotGroup.position.set(4, -1.4, 0); // Placed on podium
+        // --- 4. CREATING TRUE SPATIAL 3D YOUTUBE SCREEN (CSS3D + WEBGL FRAME) ---
+        function create3DSpatialVideoScreen(initialVideoId) {
+            const screenWidth = 960;
+            const screenHeight = 540;
 
-            // Robot Materials
-            const bodyMat = new THREE.MeshStandardMaterial({
-                color: 0xf3f4f6,
-                metalness: 0.6,
-                roughness: 0.2
+            // A. Create Iframe Element for CSS3D Object
+            const iframeContainer = document.createElement('div');
+            iframeContainer.style.width = `${screenWidth}px`;
+            iframeContainer.style.height = `${screenHeight}px`;
+            iframeContainer.style.backgroundColor = '#000000';
+            iframeContainer.style.border = 'none';
+
+            iframeContainer.innerHTML = `
+                <iframe id="yt-spatial-iframe" 
+                        width="${screenWidth}" 
+                        height="${screenHeight}" 
+                        src="https://www.youtube.com/embed/${initialVideoId}?enablejsapi=1&autoplay=0&rel=0" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen 
+                        style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            `;
+
+            // B. CSS3D Object to position Iframe in 3D Space
+            const cssObject = new THREE.CSS3DObject(iframeContainer);
+            cssObject.position.set(0, 150, 0); // Positioned inside the 3D scene
+            sceneCSS.add(cssObject);
+
+            // C. WebGL Bezel Frame & Structure Behind the 3D Screen
+            const frameGeo = new THREE.BoxGeometry(1020, 600, 20);
+            const frameMat = new THREE.MeshStandardMaterial({
+                color: 0x121524,
+                metalness: 0.9,
+                roughness: 0.1
             });
-            const darkMat = new THREE.MeshStandardMaterial({
-                color: 0x111827,
-                metalness: 0.8,
-                roughness: 0.3
+            const screenFrame = new THREE.Mesh(frameGeo, frameMat);
+            screenFrame.position.set(0, 150, -12);
+            screenFrame.castShadow = true;
+            sceneGL.add(screenFrame);
+
+            // Glowing Outer Screen Border
+            const borderGeo = new THREE.BoxGeometry(1030, 610, 10);
+            const borderMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+            const screenBorder = new THREE.Mesh(borderGeo, borderMat);
+            screenBorder.position.set(0, 150, -16);
+            sceneGL.add(screenBorder);
+
+            // WebGL Screen Blocker Hole (Blends Depth so WebGL objects can pass behind or in front)
+            const holeGeo = new THREE.PlaneGeometry(screenWidth, screenHeight);
+            const holeMat = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                colorWrite: false // Prevents drawing to color buffer but updates depth
             });
+            const screenHole = new THREE.Mesh(holeGeo, holeMat);
+            screenHole.position.set(0, 150, 0);
+            sceneGL.add(screenHole);
+
+            // Left & Right 3D Studio Speakers
+            createStudioSpeakers(-600, 150, -10);
+            createStudioSpeakers(600, 150, -10);
+        }
+
+        function createStudioSpeakers(x, y, z) {
+            const speakerGroup = new THREE.Group();
+            speakerGroup.position.set(x, y, z);
+
+            const bodyGeo = new THREE.BoxGeometry(100, 480, 120);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.4, metalness: 0.6 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            speakerGroup.add(body);
+
+            // Woofer Cones
+            const coneGeo = new THREE.CylinderGeometry(35, 25, 20, 32);
+            const coneMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.2, metalness: 0.8 });
+            
+            const wooferTop = new THREE.Mesh(coneGeo, coneMat);
+            wooferTop.rotation.x = Math.PI / 2;
+            wooferTop.position.set(0, 100, 55);
+            speakerGroup.add(wooferTop);
+
+            const wooferBottom = new THREE.Mesh(coneGeo, coneMat);
+            wooferBottom.rotation.x = Math.PI / 2;
+            wooferBottom.position.set(0, -100, 55);
+            speakerGroup.add(wooferBottom);
+
+            sceneGL.add(speakerGroup);
+        }
+
+        // --- 5. 3D MASCOT CHARACTER GEOMETRY & KINEMATICS ---
+        function create3DMascotRobot() {
+            mascotGroup = new THREE.Group();
+            mascotGroup.position.set(450, -200, 100); // Standing on podium
+
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf3f4f6, metalness: 0.6, roughness: 0.2 });
+            const darkMat = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.8, roughness: 0.3 });
             const cyanGlowMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
 
             // Torso (Body)
-            const bodyGeo = new THREE.CylinderGeometry(0.5, 0.4, 1.1, 16);
+            const bodyGeo = new THREE.CylinderGeometry(40, 32, 90, 16);
             mascotBody = new THREE.Mesh(bodyGeo, bodyMat);
-            mascotBody.position.y = 0.85;
+            mascotBody.position.y = 70;
             mascotBody.castShadow = true;
             mascotGroup.add(mascotBody);
 
-            // YouTube Logo Emblem on Body
-            const badgeGeo = new THREE.BoxGeometry(0.25, 0.18, 0.05);
+            // YouTube Logo Emblem
+            const badgeGeo = new THREE.BoxGeometry(22, 14, 4);
             const badgeMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
             const badge = new THREE.Mesh(badgeGeo, badgeMat);
-            badge.position.set(0, 0.95, 0.45);
+            badge.position.set(0, 80, 36);
             mascotGroup.add(badge);
 
             // Head Mesh
-            const headGeo = new THREE.SphereGeometry(0.5, 32, 32);
+            const headGeo = new THREE.SphereGeometry(42, 32, 32);
             mascotHead = new THREE.Mesh(headGeo, bodyMat);
-            mascotHead.position.y = 1.75;
+            mascotHead.position.y = 145;
             mascotHead.scale.set(1.1, 0.9, 1);
             mascotHead.castShadow = true;
             mascotGroup.add(mascotHead);
 
-            // Head Antenna
-            const antStickGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.3);
+            // Antenna
+            const antStickGeo = new THREE.CylinderGeometry(2, 2, 25);
             const antStick = new THREE.Mesh(antStickGeo, darkMat);
-            antStick.position.set(0, 2.3, 0);
+            antStick.position.set(0, 195, 0);
             mascotGroup.add(antStick);
 
-            const antTipGeo = new THREE.SphereGeometry(0.08, 16, 16);
+            const antTipGeo = new THREE.SphereGeometry(8, 16, 16);
             const antTipMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
             const antTip = new THREE.Mesh(antTipGeo, antTipMat);
-            antTip.position.set(0, 2.48, 0);
+            antTip.position.set(0, 210, 0);
             mascotGroup.add(antTip);
 
-            // Visor Screen
-            const visorGeo = new THREE.BoxGeometry(0.6, 0.22, 0.1);
+            // Visor
+            const visorGeo = new THREE.BoxGeometry(50, 18, 8);
             const visor = new THREE.Mesh(visorGeo, darkMat);
-            visor.position.set(0, 1.75, 0.45);
+            visor.position.set(0, 145, 38);
             mascotGroup.add(visor);
 
-            // Glowing Cyan Eyes
-            const eyeGeo = new THREE.SphereGeometry(0.07, 16, 16);
+            // Eyes
+            const eyeGeo = new THREE.SphereGeometry(6, 16, 16);
             leftEye = new THREE.Mesh(eyeGeo, cyanGlowMat);
-            leftEye.position.set(-0.15, 1.75, 0.5);
+            leftEye.position.set(-12, 145, 42);
             mascotGroup.add(leftEye);
 
             rightEye = new THREE.Mesh(eyeGeo, cyanGlowMat);
-            rightEye.position.set(0.15, 1.75, 0.5);
+            rightEye.position.set(12, 145, 42);
             mascotGroup.add(rightEye);
 
             // Arms
-            const armGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.7);
+            const armGeo = new THREE.CylinderGeometry(8, 6, 60);
             leftArm = new THREE.Mesh(armGeo, bodyMat);
-            leftArm.position.set(-0.65, 0.9, 0);
+            leftArm.position.set(-55, 75, 0);
             leftArm.rotation.z = 0.3;
             leftArm.castShadow = true;
             mascotGroup.add(leftArm);
 
             rightArm = new THREE.Mesh(armGeo, bodyMat);
-            rightArm.position.set(0.65, 0.9, 0);
+            rightArm.position.set(55, 75, 0);
             rightArm.rotation.z = -0.3;
             rightArm.castShadow = true;
             mascotGroup.add(rightArm);
 
-            scene.add(mascotGroup);
+            sceneGL.add(mascotGroup);
         }
 
         // --- 6. LIGHTING CONTROLS ---
         function setupLighting() {
             ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-            scene.add(ambientLight);
+            sceneGL.add(ambientLight);
 
             const spotLight = new THREE.SpotLight(0xffffff, 1.2);
-            spotLight.position.set(0, 12, 12);
+            spotLight.position.set(0, 900, 1000);
             spotLight.angle = Math.PI / 4;
             spotLight.penumbra = 0.5;
             spotLight.castShadow = true;
-            scene.add(spotLight);
+            sceneGL.add(spotLight);
 
-            pointLight1 = new THREE.PointLight(0xef4444, 2, 20);
-            pointLight1.position.set(-8, 3, -2);
-            scene.add(pointLight1);
+            pointLight1 = new THREE.PointLight(0xef4444, 2, 1200);
+            pointLight1.position.set(-600, 200, 200);
+            sceneGL.add(pointLight1);
 
-            pointLight2 = new THREE.PointLight(0x06b6d4, 2, 20);
-            pointLight2.position.set(8, 3, -2);
-            scene.add(pointLight2);
+            pointLight2 = new THREE.PointLight(0x06b6d4, 2, 1200);
+            pointLight2.position.set(600, 200, 200);
+            sceneGL.add(pointLight2);
 
-            screenGlowLight = new THREE.PointLight(0xef4444, 1.5, 15);
-            screenGlowLight.position.set(0, 2, -4);
-            scene.add(screenGlowLight);
+            screenGlowLight = new THREE.PointLight(0xef4444, 2, 800);
+            screenGlowLight.position.set(0, 150, 100);
+            sceneGL.add(screenGlowLight);
         }
 
-        // --- 7. MASCOT CHARACTER ANIMATION KINEMATICS ---
+        // --- 7. ANIMATION KINEMATICS & ACTIONS ---
         function updateMascotAnimation(time) {
             if (!mascotGroup) return;
 
             // Idle Floating Animation
-            const idleBreathe = Math.sin(time * 2) * 0.05;
-            mascotGroup.position.y = -1.4 + idleBreathe;
-            mascotHead.rotation.y = Math.sin(time * 1.2) * 0.15 - 0.3;
+            const idleBreathe = Math.sin(time * 2) * 5;
+            mascotGroup.position.y = -200 + idleBreathe;
+            mascotHead.rotation.y = Math.sin(time * 1.2) * 0.2 - 0.4;
 
             // Triggered States
             if (currentMascotState === 'dance') {
-                mascotGroup.rotation.y = Math.sin(time * 6) * 0.4;
+                mascotGroup.rotation.y = Math.sin(time * 6) * 0.5;
                 leftArm.rotation.z = 0.5 + Math.sin(time * 8) * 0.8;
                 rightArm.rotation.z = -0.5 - Math.cos(time * 8) * 0.8;
                 mascotHead.rotation.z = Math.sin(time * 6) * 0.2;
             } else if (currentMascotState === 'wave') {
                 rightArm.rotation.z = -2.2 + Math.sin(time * 10) * 0.4;
                 leftArm.rotation.z = 0.3;
-                mascotGroup.rotation.y = -0.3;
+                mascotGroup.rotation.y = -0.4;
             } else if (currentMascotState === 'jump') {
-                const jumpHeight = Math.abs(Math.sin(time * 5)) * 0.6;
-                mascotGroup.position.y = -1.4 + jumpHeight;
+                const jumpHeight = Math.abs(Math.sin(time * 5)) * 45;
+                mascotGroup.position.y = -200 + jumpHeight;
                 leftArm.rotation.z = 1.2;
                 rightArm.rotation.z = -1.2;
             } else {
@@ -541,7 +570,7 @@
 
         function triggerMascotAction(actionName) {
             currentMascotState = actionName;
-            logCppEngine(`[ActionTrigger] Executed state transition: -> ${actionName.toUpperCase()}`);
+            logCppEngine(`[ActionTrigger] Mascot Action Executed: -> ${actionName.toUpperCase()}`);
 
             if (mascotActionTimer) clearTimeout(mascotActionTimer);
             mascotActionTimer = setTimeout(() => {
@@ -572,22 +601,22 @@
             showToast(`Mood pencahayaan diubah ke ${mood.toUpperCase()}`);
         }
 
-        // --- 8. CAMERA MODES ---
+        // --- 8. CAMERA SWITCHER ---
         function setCameraView(mode) {
             document.querySelectorAll('#btn-cam-cinema, #btn-cam-mascot, #btn-cam-free').forEach(b => b.classList.remove('active'));
 
             if (mode === 'cinema') {
                 document.getElementById('btn-cam-cinema').classList.add('active');
-                animateCameraTo(new THREE.Vector3(0, 1.8, 7.5), new THREE.Vector3(0, 1.8, -5));
-                logCppEngine(`[Camera] Switched to CINEMA FOCUS mode.`);
+                animateCameraTo(new THREE.Vector3(0, 150, 850), new THREE.Vector3(0, 150, 0));
+                logCppEngine(`[Camera] Switched to 3D CINEMA SCREEN view.`);
             } else if (mode === 'mascot') {
                 document.getElementById('btn-cam-mascot').classList.add('active');
-                animateCameraTo(new THREE.Vector3(4, -0.2, 3.2), new THREE.Vector3(4, -0.5, 0));
-                logCppEngine(`[Camera] Switched to MASCOT BOT FOCUS mode.`);
+                animateCameraTo(new THREE.Vector3(450, -50, 420), new THREE.Vector3(450, -70, 0));
+                logCppEngine(`[Camera] Switched to MASCOT BOT view.`);
             } else if (mode === 'free') {
                 document.getElementById('btn-cam-free').classList.add('active');
-                animateCameraTo(new THREE.Vector3(6, 4, 10), new THREE.Vector3(0, 1, 0));
-                logCppEngine(`[Camera] Switched to FREE ORBIT mode.`);
+                animateCameraTo(new THREE.Vector3(700, 450, 1100), new THREE.Vector3(0, 100, 0));
+                logCppEngine(`[Camera] Switched to FREE 360° ORBIT view.`);
             }
         }
 
@@ -611,10 +640,11 @@
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            rendererGL.setSize(window.innerWidth, window.innerHeight);
+            rendererCSS.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- 9. YOUTUBE URL PARSER & LOADER ---
+        // --- 9. YOUTUBE URL & PLAYLIST LOADER ---
         function extractYouTubeId(url) {
             if (!url) return null;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -629,16 +659,13 @@
                 return;
             }
 
-            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-                ytPlayer.loadVideoById(videoId);
-            } else {
-                // Fallback to iframe re-src
-                const placeholder = document.getElementById('yt-player-placeholder');
-                placeholder.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" frameborder="0" allowfullscreen></iframe>`;
+            const iframe = document.getElementById('yt-spatial-iframe');
+            if (iframe) {
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&rel=0`;
             }
 
             showToast(`Memuat Video ID: ${videoId}`);
-            logCppEngine(`[YouTubeAPI] Video loaded: https://youtu.be/${videoId}`);
+            logCppEngine(`[Spatial3D] Video spatial projection loaded: https://youtu.be/${videoId}`);
             triggerMascotAction('dance');
         }
 
@@ -698,22 +725,22 @@
             }
         }
 
-        // --- 10. MAIN RENDER LOOP ---
+        // --- 10. DUAL RENDER LOOP ---
         function animate(time) {
             requestAnimationFrame(animate);
             const timeSec = time * 0.001;
 
             controls.update();
             updateMascotAnimation(timeSec);
-            renderer.render(scene, camera);
+
+            // Render both CSS3D Scene and WebGL Scene synchronized
+            rendererCSS.render(sceneCSS, camera);
+            rendererGL.render(sceneGL, camera);
         }
 
-        // --- 11. APPLICATION INITIALIZATION ---
+        // --- 11. STARTUP INITIALIZATION ---
         window.onload = function () {
-            // Init Three.js 3D Theater
             init3DWorld();
-
-            // Populate Playlist
             renderPlaylistUI();
 
             // UI Listeners
@@ -733,10 +760,10 @@
             document.getElementById('btn-cam-mascot').onclick = () => setCameraView('mascot');
             document.getElementById('btn-cam-free').onclick = () => setCameraView('free');
 
-            // Start Main Loop
+            // Start Animation Loop
             animate(0);
 
-            logCppEngine("[EngineReady] WASM C++ 3D Theater initialized successfully.");
+            logCppEngine("[EngineReady] Dual CSS3D + WebGL YouTube Cinema running.");
         };
     </script>
 </body>
