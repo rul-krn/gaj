@@ -1,795 +1,1952 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube 3D Interactive Cyber Cinema</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <style>
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: #050811;
-            color: #e2e8f0;
-            overflow: hidden;
-            margin: 0;
-        }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        
-        /* Glassmorphism Styling */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-        .glass-panel-glow {
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.25);
-        }
-
-        /* Screen bezel alignment wrapper */
-        #screen-bezel-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            transition: all 0.5s ease-in-out;
-            border: 3px solid rgba(0, 243, 255, 0.8);
-            box-shadow: 0 0 35px rgba(0, 243, 255, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8);
-            border-radius: 8px;
-            overflow: hidden;
-            background: #000;
-        }
-
-        #screen-bezel-wrapper iframe {
-            pointer-events: auto;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00f3ff;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff007f;
-        }
-
-        /* Neon Glow Utility Classes */
-        .neon-border-cyan { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
-        .neon-border-pink { border-color: #ff007f; box-shadow: 0 0 10px rgba(255, 0, 127, 0.4); }
-        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.8); }
-        .neon-text-pink { text-shadow: 0 0 8px rgba(255, 0, 127, 0.8); }
-
-        /* Terminal Console Scrolling */
-        .console-log-area {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.75rem;
-            line-height: 1.25;
-        }
-
-        /* Pulse Animation */
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 8px #00f3ff); }
-            50% { opacity: 1; filter: drop-shadow(0 0 18px #ff007f); }
-        }
-        .pulse-active {
-            animation: pulse-glow 2s infinite;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07101d">
+<title>AI Assistant Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07101d;
+--bg2:#0a1422;
+--panel:#0d1726;
+--panel2:#111d2e;
+--border:#22334a;
+--text:#e8f0fb;
+--muted:#8da0b8;
+--accent:#38bdf8;
+--accent2:#2563eb;
+--user:#075985;
+--success:#22c55e;
+--danger:#ef4444
+}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+font-family:Inter,"Segoe UI",Arial,sans-serif;
+background:radial-gradient(circle at top,#142a44 0,#07101d 45%,#040a12 100%);
+color:var(--text)
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{
+height:100vh;
+display:grid;
+grid-template-columns:260px minmax(0,1fr);
+overflow:hidden
+}
+.sidebar{
+background:rgba(6,13,23,.94);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+padding:14px;
+gap:14px
+}
+.brand{
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px 4px 14px
+}
+.logo{
+width:40px;
+height:40px;
+border-radius:12px;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,#38bdf8,#6366f1);
+box-shadow:0 8px 30px rgba(56,189,248,.2);
+font-weight:900;
+color:#00111d
+}
+.brand b{font-size:16px}
+.brand span{
+display:block;
+font-size:11px;
+color:var(--muted);
+margin-top:2px
+}
+.new-chat{
+width:100%;
+padding:11px;
+border-radius:11px;
+border:1px solid #29445e;
+background:#102239;
+color:#e5f7ff;
+font-weight:700
+}
+.new-chat:hover{
+background:#14304a;
+border-color:var(--accent)
+}
+.side-title{
+font-size:10px;
+letter-spacing:1.2px;
+text-transform:uppercase;
+color:#61758d;
+margin:5px 4px
+}
+.chat-list{
+flex:1;
+overflow:auto;
+display:flex;
+flex-direction:column;
+gap:5px
+}
+.chat-item{
+width:100%;
+border:1px solid transparent;
+background:transparent;
+color:#b9c9dc;
+padding:10px;
+border-radius:9px;
+text-align:left;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+.chat-item:hover,
+.chat-item.active{
+background:#101f32;
+border-color:#1f3852;
+color:#fff
+}
+.sidebar-bottom{
+border-top:1px solid var(--border);
+padding-top:12px
+}
+.status{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:11px;
+color:var(--muted)
+}
+.online-dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:var(--success);
+box-shadow:0 0 12px rgba(34,197,94,.7)
+}
+.main{
+min-width:0;
+display:flex;
+flex-direction:column
+}
+.header{
+height:64px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 18px;
+border-bottom:1px solid var(--border);
+background:rgba(8,17,30,.75);
+backdrop-filter:blur(18px)
+}
+.header-title{
+font-weight:800
+}
+.header-sub{
+font-size:11px;
+color:var(--muted);
+margin-top:2px
+}
+.header-actions{
+display:flex;
+align-items:center;
+gap:7px
+}
+select,
+.icon-btn{
+border:1px solid var(--border);
+background:#0e1b2c;
+color:#dce8f7;
+border-radius:9px
+}
+select{padding:8px 10px}
+.icon-btn{
+width:38px;
+height:38px
+}
+.icon-btn:hover{
+border-color:#3a5d7d;
+background:#12243a
+}
+.chat{
+flex:1;
+overflow-y:auto;
+padding:25px 16px 155px
+}
+.messages{
+max-width:900px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:18px
+}
+.welcome{
+text-align:center;
+padding:8vh 10px 30px
+}
+.hero-icon{
+font-size:48px;
+margin-bottom:14px;
+background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+-webkit-background-clip:text;
+color:transparent
+}
+.welcome h1{
+font-size:32px;
+letter-spacing:-1px
+}
+.welcome p{
+max-width:650px;
+margin:10px auto 0;
+color:var(--muted);
+line-height:1.6
+}
+.suggestions{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+max-width:720px;
+margin:28px auto
+}
+.suggestion{
+padding:13px;
+text-align:left;
+background:#0d1929;
+border:1px solid var(--border);
+border-radius:12px;
+color:#cbd9e9;
+transition:.2s
+}
+.suggestion:hover{
+background:#10263b;
+border-color:#37627f;
+transform:translateY(-1px)
+}
+.message{
+display:flex;
+align-items:flex-start;
+gap:11px
+}
+.avatar{
+width:34px;
+height:34px;
+flex:0 0 34px;
+border-radius:10px;
+display:grid;
+place-items:center;
+font-weight:800;
+font-size:13px
+}
+.message.user .avatar{
+background:#086d9e
+}
+.message.assistant .avatar{
+background:linear-gradient(135deg,#2563eb,#7c3aed)
+}
+.bubble{
+min-width:0;
+max-width:calc(100% - 46px);
+color:#dce7f5;
+line-height:1.65
+}
+.message.user .bubble{
+background:linear-gradient(135deg,#075985,#0369a1);
+color:white;
+padding:11px 14px;
+border-radius:14px 14px 3px 14px;
+white-space:normal;
+word-break:break-word
+}
+.message.assistant .bubble{
+padding:2px 0;
+word-break:break-word
+}
+.meta{
+font-size:10px;
+color:#667b94;
+margin-top:5px
+}
+.bubble p{
+margin:7px 0
+}
+.bubble h1,
+.bubble h2,
+.bubble h3{
+margin:17px 0 8px;
+color:white
+}
+.bubble ul,
+.bubble ol{
+margin:8px 0 8px 22px
+}
+.bubble li{
+margin:4px 0
+}
+.bubble strong{color:#fff}
+.bubble em{color:#c6d8eb}
+.bubble a{
+color:#67d3ff;
+text-decoration:none
+}
+.bubble a:hover{text-decoration:underline}
+.inline-code{
+background:#142235;
+border:1px solid #263d56;
+padding:2px 5px;
+border-radius:5px;
+font-family:Consolas,monospace;
+font-size:.9em
+}
+.code-wrap{
+margin:12px 0;
+background:#060b12;
+border:1px solid #263b54;
+border-radius:12px;
+overflow:hidden
+}
+.code-head{
+height:35px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 10px;
+background:#0d1725;
+border-bottom:1px solid #1e3148;
+color:#8296ad;
+font-size:11px
+}
+.copy-btn{
+border:1px solid #2b425b;
+background:#172538;
+color:#bdd0e4;
+border-radius:6px;
+padding:4px 8px;
+font-size:11px
+}
+.copy-btn:hover{
+background:#21344b;
+color:#fff
+}
+pre{
+margin:0;
+padding:14px;
+overflow:auto;
+font-family:Consolas,Monaco,"Courier New",monospace;
+font-size:13px;
+line-height:1.55;
+color:#d9f2ff;
+white-space:pre
+}
+.typing{
+display:inline-flex;
+align-items:center;
+gap:4px;
+padding:10px 12px;
+border-radius:11px;
+background:#0e1b2c;
+border:1px solid #22354d
+}
+.typing i{
+width:6px;
+height:6px;
+border-radius:50%;
+background:#38bdf8;
+animation:typing 1s infinite
+}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes typing{
+0%,100%{transform:translateY(0);opacity:.35}
+50%{transform:translateY(-4px);opacity:1}
+}
+.composer-area{
+position:fixed;
+left:260px;
+right:0;
+bottom:0;
+padding:10px 16px 16px;
+background:linear-gradient(transparent,rgba(4,10,18,.98) 30%)
+}
+.composer{
+max-width:900px;
+margin:auto;
+border:1px solid #2a4057;
+background:#0d1828;
+border-radius:17px;
+overflow:hidden;
+box-shadow:0 -10px 45px rgba(0,0,0,.3)
+}
+.tools{
+display:flex;
+align-items:center;
+gap:6px;
+padding:8px 10px;
+border-bottom:1px solid #203148
+}
+.tool{
+border:1px solid transparent;
+background:transparent;
+color:#8fa4bb;
+border-radius:7px;
+padding:5px 8px;
+font-size:12px
+}
+.tool:hover,
+.tool.active{
+background:#13243a;
+border-color:#294761;
+color:#e1f7ff
+}
+.file-label input{display:none}
+textarea{
+width:100%;
+min-height:55px;
+max-height:180px;
+resize:none;
+border:0;
+outline:0;
+background:transparent;
+color:#f4f8ff;
+padding:13px 14px;
+font-size:15px;
+line-height:1.5
+}
+textarea::placeholder{color:#60758d}
+.send-row{
+display:flex;
+justify-content:flex-end;
+padding:7px
+}
+.send{
+width:43px;
+height:38px;
+border:0;
+border-radius:10px;
+background:linear-gradient(135deg,#0ea5e9,#2563eb);
+color:white;
+font-size:18px;
+box-shadow:0 4px 15px rgba(37,99,235,.25)
+}
+.send:hover{
+filter:brightness(1.1)
+}
+.send:disabled{
+opacity:.4;
+cursor:not-allowed
+}
+.stop{
+display:none;
+border:1px solid #63303a;
+background:#3a1720;
+color:#ffabb7;
+border-radius:8px;
+padding:6px 10px;
+font-size:11px
+}
+.file-chip{
+display:none;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin:8px 10px 0;
+padding:7px 9px;
+border:1px solid #294762;
+background:#102237;
+border-radius:8px;
+font-size:12px;
+color:#a9c9df
+}
+.remove-file{
+background:transparent;
+border:0;
+color:#94a3b8;
+font-size:17px
+}
+.empty{
+text-align:center;
+color:#60758d;
+font-size:12px;
+padding:20px
+}
+::-webkit-scrollbar{
+width:7px;
+height:7px
+}
+::-webkit-scrollbar-track{
+background:transparent
+}
+::-webkit-scrollbar-thumb{
+background:#20344b;
+border-radius:20px
+}
+::-webkit-scrollbar-thumb:hover{
+background:#2d4b68
+}
+@media(max-width:760px){
+html,body{overflow:hidden}
+.app{grid-template-columns:1fr}
+.sidebar{display:none}
+.header{height:56px;padding:0 11px}
+.header-sub{display:none}
+.chat{padding:18px 11px 145px}
+.welcome{padding-top:7vh}
+.welcome h1{font-size:26px}
+.suggestions{grid-template-columns:1fr;margin-top:22px}
+.composer-area{
+left:0;
+padding:7px
+}
+.header-actions select{
+max-width:120px
+}
+.bubble{
+max-width:calc(100% - 44px)
+}
+}
+</style>
 </head>
-<body class="w-screen h-screen overflow-hidden select-none">
 
-    <!-- 3D Three.js WebGL Canvas Container -->
-    <div id="canvas-container" class="absolute inset-0 w-full h-full z-0"></div>
+<body>
 
-    <!-- 2D Overlay Sync Screen Bezel for YouTube Video Iframe -->
-    <div id="screen-bezel-wrapper" class="z-10">
-        <!-- Video Canvas Overlay -->
-        <iframe id="youtube-iframe" 
-                src="https://www.youtube.com/embed/jfKfPfyJRdk?enablejsapi=1&autoplay=1&mute=0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
-        <!-- CORS/Owner Restriction Fallback Notice -->
-        <div id="iframe-fallback-banner" class="hidden absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center z-20">
-            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-400 mb-3 animate-bounce"></i>
-            <h3 class="font-orbitron text-lg font-bold text-white mb-2">Video Tidak Dapat Diputar di External Player</h3>
-            <p class="text-xs text-slate-300 max-w-md mb-4">
-                Pemilik video membatasi pemutaran eksternal (Error 150/101). Anda dapat membuka video ini langsung di tab YouTube baru atau mencoba video lain.
-            </p>
-            <div class="flex gap-3">
-                <button id="open-direct-youtube-btn" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg text-xs transition flex items-center gap-2 shadow-lg">
-                    <i class="fa-brands fa-youtube text-base"></i> Buka Direct YouTube
-                </button>
-                <button onclick="document.getElementById('iframe-fallback-banner').classList.add('hidden')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
+<div class="app">
 
-    <!-- Header Top Navigation Bar -->
-    <header class="absolute top-0 left-0 right-0 z-30 p-4 flex flex-col md:flex-row items-center justify-between gap-4 pointer-events-none">
-        <!-- Logo Brand -->
-        <div class="glass-panel px-4 py-2 rounded-xl flex items-center gap-3 pointer-events-auto border-cyan-500/30">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-pink-500 flex items-center justify-center text-slate-950 font-bold text-lg shadow-lg">
-                <i class="fa-solid fa-play"></i>
-            </div>
-            <div>
-                <h1 class="font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 tracking-wider text-sm md:text-base">
-                    CYBER CINEMA 3D
-                </h1>
-                <p class="text-[10px] text-cyan-300/70 font-mono tracking-widest">WASM-HYBRID ENGINE v3.2</p>
-            </div>
-        </div>
+<aside class="sidebar">
 
-        <!-- URL Input & Search Bar -->
-        <div class="glass-panel p-1.5 rounded-2xl flex items-center gap-2 w-full md:w-[500px] pointer-events-auto border-cyan-500/40 neon-border-cyan">
-            <i class="fa-brands fa-youtube text-red-500 text-xl ml-3"></i>
-            <input type="text" id="youtube-url-input" 
-                   placeholder="Tempel Link YouTube / Video ID di sini..." 
-                   class="bg-transparent border-none outline-none text-xs md:text-sm text-white placeholder-slate-400 w-full px-2 font-mono" />
-            <button id="load-video-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition duration-300 flex items-center gap-1.5 shadow-lg active:scale-95">
-                <i class="fa-solid fa-bolt"></i> Load
+<div class="brand">
+<div class="logo">AI</div>
+<div>
+<b>AI Assistant Pro</b>
+<span>Intelligent Workspace</span>
+</div>
+</div>
+
+<button class="new-chat" id="newChat">＋ Chat Baru</button>
+
+<div class="side-title">Percakapan</div>
+
+<div class="chat-list" id="chatList"></div>
+
+<div class="sidebar-bottom">
+<div class="status">
+<span class="online-dot"></span>
+<span id="serverStatus">Memeriksa server...</span>
+</div>
+</div>
+
+</aside>
+
+<main class="main">
+
+<header class="header">
+
+<div>
+<div class="header-title">AI Assistant Pro</div>
+<div class="header-sub">AI • Coding • Web Search • File Analysis</div>
+</div>
+
+<div class="header-actions">
+
+<select id="mode">
+<option value="general">General</option>
+<option value="coding">Coding</option>
+<option value="study">Belajar</option>
+<option value="creative">Kreatif</option>
+</select>
+
+<button class="icon-btn" id="clearChat" title="Hapus chat">🗑</button>
+
+</div>
+
+</header>
+
+<section class="chat" id="chatBox">
+
+<div class="messages" id="messages">
+
+<div class="welcome">
+
+<div class="hero-icon">✦</div>
+
+<h1>Apa yang bisa saya bantu?</h1>
+
+<p>
+Saya adalah AI Assistant Pro. Kamu bisa bertanya,
+membuat kode, memperbaiki bug, belajar, menulis,
+atau mencari informasi terbaru.
+</p>
+
+<div class="suggestions">
+
+<button class="suggestion">
+Buatkan landing page HTML modern
+</button>
+
+<button class="suggestion">
+Jelaskan JavaScript async/await dengan contoh
+</button>
+
+<button class="suggestion">
+Bantu debug kode saya
+</button>
+
+<button class="suggestion">
+Cari informasi terbaru tentang teknologi AI
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<div class="composer-area">
+
+<div class="composer">
+
+<div class="file-chip" id="fileChip"></div>
+
+<div class="tools">
+
+<label class="tool file-label">
+📎 Lampirkan
+<input
+id="fileInput"
+type="file"
+accept=".txt,.md,.json,.js,.ts,.html,.css,.py,.java,.cpp,.c,.gd,.xml,.csv">
+</label>
+
+<button class="tool" id="webBtn">
+🌐 Web Search: OFF
+</button>
+
+<button class="stop" id="stopBtn">
+■ Hentikan
+</button>
+
+</div>
+
+<textarea
+id="userInput"
+placeholder="Tulis pesan... Enter untuk mengirim, Shift+Enter untuk baris baru"></textarea>
+
+<div class="send-row">
+
+<button class="send" id="sendBtn">
+➤
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<script>
+
+/* ============================================================
+   AI ASSISTANT PRO
+   Frontend Single HTML
+   Backend default: http://localhost:3000
+   ============================================================ */
+
+/*
+   PENTING:
+
+   Jangan menaruh OpenAI API key di file HTML.
+
+   HTML ini mengirim permintaan ke:
+
+   http://localhost:3000/api/chat
+   atau
+   http://localhost:3000/api/chat/stream
+
+   Server Express yang memegang API key.
+*/
+
+const API_BASE = "";
+
+const chatBox = document.getElementById("chatBox");
+const messagesEl = document.getElementById("messages");
+const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const newChatBtn = document.getElementById("newChat");
+const clearChatBtn = document.getElementById("clearChat");
+const modeEl = document.getElementById("mode");
+const webBtn = document.getElementById("webBtn");
+const stopBtn = document.getElementById("stopBtn");
+const fileInput = document.getElementById("fileInput");
+const fileChip = document.getElementById("fileChip");
+const chatList = document.getElementById("chatList");
+const serverStatus = document.getElementById("serverStatus");
+
+let webSearch = false;
+let attachedFile = null;
+let controller = null;
+
+let chats = [];
+
+try {
+  chats = JSON.parse(
+    localStorage.getItem("ai_assistant_pro_chats") || "[]"
+  );
+} catch {
+  chats = [];
+}
+
+let activeChatId =
+  localStorage.getItem("ai_assistant_pro_active") || null;
+
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+function createId(){
+
+  return (
+    Date.now().toString(36) +
+    Math.random().toString(36).substring(2,9)
+  );
+
+}
+
+
+function saveState(){
+
+  localStorage.setItem(
+    "ai_assistant_pro_chats",
+    JSON.stringify(chats)
+  );
+
+  if(activeChatId){
+
+    localStorage.setItem(
+      "ai_assistant_pro_active",
+      activeChatId
+    );
+
+  }
+
+  renderChatList();
+
+}
+
+
+function getActiveChat(){
+
+  return chats.find(
+    chat => chat.id === activeChatId
+  );
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* ============================================================
+   MARKDOWN
+   ============================================================ */
+
+function renderInlineMarkdown(text){
+
+  return text
+
+    .replace(
+      /`([^`\n]+)`/g,
+      '<span class="inline-code">$1</span>'
+    )
+
+    .replace(
+      /\*\*(.+?)\*\*/g,
+      "<strong>$1</strong>"
+    )
+
+    .replace(
+      /\*(.+?)\*/g,
+      "<em>$1</em>"
+    )
+
+    .replace(
+      /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener">$1</a>'
+    );
+
+}
+
+
+function renderMarkdown(text){
+
+  if(!text){
+    return "";
+  }
+
+  let source = escapeHTML(text);
+
+  const codeBlocks = [];
+
+  source = source.replace(
+    /```([a-zA-Z0-9_+#.-]*)\n?([\s\S]*?)```/g,
+    function(_,language,code){
+
+      const index = codeBlocks.length;
+
+      codeBlocks.push({
+        language: language || "code",
+        code: code
+          .replace(/^\n/,"")
+          .replace(/\n$/,"")
+      });
+
+      return `___CODE_BLOCK_${index}___`;
+
+    }
+  );
+
+  const lines = source.split("\n");
+
+  const output = [];
+
+  let listOpen = false;
+
+  for(const line of lines){
+
+    if(/^#{1,3}\s/.test(line)){
+
+      if(listOpen){
+
+        output.push("</ul>");
+        listOpen = false;
+
+      }
+
+      const match = line.match(
+        /^(#{1,3})\s(.+)$/
+      );
+
+      const level = match[1].length;
+
+      output.push(
+        `<h${level}>${renderInlineMarkdown(match[2])}</h${level}>`
+      );
+
+      continue;
+
+    }
+
+
+    if(/^[-*]\s/.test(line)){
+
+      if(!listOpen){
+
+        output.push("<ul>");
+        listOpen = true;
+
+      }
+
+      output.push(
+        `<li>${renderInlineMarkdown(
+          line.substring(2)
+        )}</li>`
+      );
+
+      continue;
+
+    }
+
+
+    if(/^\d+\.\s/.test(line)){
+
+      if(listOpen){
+
+        output.push("</ul>");
+        listOpen = false;
+
+      }
+
+      output.push(
+        `<p>${renderInlineMarkdown(line)}</p>`
+      );
+
+      continue;
+
+    }
+
+
+    if(listOpen){
+
+      output.push("</ul>");
+      listOpen = false;
+
+    }
+
+
+    if(line.trim()===""){
+
+      output.push("<br>");
+
+    }else{
+
+      output.push(
+        `<p>${renderInlineMarkdown(line)}</p>`
+      );
+
+    }
+
+  }
+
+  if(listOpen){
+
+    output.push("</ul>");
+
+  }
+
+
+  let result = output.join("");
+
+  codeBlocks.forEach(
+    function(block,index){
+
+      const safeCode = block.code;
+
+      const encodedCode =
+        encodeURIComponent(block.code);
+
+      const html = `
+        <div class="code-wrap">
+
+          <div class="code-head">
+
+            <span>${escapeHTML(
+              block.language
+            )}</span>
+
+            <button
+              class="copy-btn"
+              data-code="${encodedCode}">
+              Salin
             </button>
+
+          </div>
+
+          <pre><code>${safeCode}</code></pre>
+
         </div>
+      `;
 
-        <!-- System Controls Quick Stats -->
-        <div class="glass-panel px-3 py-1.5 rounded-xl hidden lg:flex items-center gap-4 text-xs font-mono pointer-events-auto border-cyan-500/20">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span class="text-slate-300">FPS: <strong id="fps-counter" class="text-cyan-400">60</strong></span>
-            </div>
-            <div class="h-4 w-[1px] bg-slate-700"></div>
-            <div class="text-slate-300">Audio: <span id="audio-status" class="text-pink-400">SYNCED</span></div>
-        </div>
-    </header>
+      result = result.replace(
+        `___CODE_BLOCK_${index}___`,
+        html
+      );
 
-    <!-- Left Panel: Lighting Moods & Camera Views -->
-    <aside class="absolute top-24 left-4 z-30 flex flex-col gap-3 pointer-events-auto w-48">
-        <!-- Camera Presets -->
-        <div class="glass-panel p-3 rounded-2xl border-cyan-500/30">
-            <h3 class="font-orbitron text-[11px] font-bold text-cyan-400 mb-2 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-video"></i> Kamera 3D
-            </h3>
-            <div class="grid grid-cols-1 gap-1.5">
-                <button class="cam-btn text-left px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30 transition flex items-center justify-between" data-cam="cinema">
-                    <span><i class="fa-solid fa-clapperboard mr-1.5"></i> Bioskop</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-                <button class="cam-btn text-left px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/60 border border-slate-700/50 text-slate-300 hover:bg-slate-700/60 transition flex items-center justify-between" data-cam="mascot">
-                    <span><i class="fa-solid fa-robot mr-1.5"></i> Mascot Cyber</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-                <button class="cam-btn text-left px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/60 border border-slate-700/50 text-slate-300 hover:bg-slate-700/60 transition flex items-center justify-between" data-cam="orbit">
-                    <span><i class="fa-solid fa-arrows-spin mr-1.5"></i> Free Orbit</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-            </div>
-        </div>
+    }
+  );
 
-        <!-- Lighting Mood Selector -->
-        <div class="glass-panel p-3 rounded-2xl border-pink-500/30">
-            <h3 class="font-orbitron text-[11px] font-bold text-pink-400 mb-2 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-lightbulb"></i> Ambient Lighting
-            </h3>
-            <div class="grid grid-cols-2 gap-1.5">
-                <button class="mood-btn px-2 py-1.5 rounded-lg text-xs text-center border border-cyan-500/50 text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/60 transition" data-mood="cyber">Cyber</button>
-                <button class="mood-btn px-2 py-1.5 rounded-lg text-xs text-center border border-amber-500/30 text-amber-300 bg-amber-950/20 hover:bg-amber-900/40 transition" data-mood="sunset">Sunset</button>
-                <button class="mood-btn px-2 py-1.5 rounded-lg text-xs text-center border border-pink-500/30 text-pink-300 bg-pink-950/20 hover:bg-pink-900/40 transition" data-mood="pink">Neon</button>
-                <button class="mood-btn px-2 py-1.5 rounded-lg text-xs text-center border border-emerald-500/30 text-emerald-300 bg-emerald-950/20 hover:bg-emerald-900/40 transition" data-mood="matrix">Matrix</button>
-            </div>
-        </div>
+  return result;
 
-        <!-- Mascot Actions -->
-        <div class="glass-panel p-3 rounded-2xl border-cyan-500/30">
-            <h3 class="font-orbitron text-[11px] font-bold text-cyan-300 mb-2 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-person-running"></i> Robot Mascot
-            </h3>
-            <div class="grid grid-cols-2 gap-1.5">
-                <button class="mascot-anim-btn px-2 py-1.5 rounded-lg text-xs bg-slate-800/80 border border-slate-700 text-slate-200 hover:border-cyan-400 transition" data-anim="dance">
-                    <i class="fa-solid fa-music text-pink-400 mr-1"></i> Joget
-                </button>
-                <button class="mascot-anim-btn px-2 py-1.5 rounded-lg text-xs bg-slate-800/80 border border-slate-700 text-slate-200 hover:border-cyan-400 transition" data-anim="wave">
-                    <i class="fa-solid fa-hand text-cyan-400 mr-1"></i> Melambai
-                </button>
-                <button class="mascot-anim-btn px-2 py-1.5 rounded-lg text-xs bg-slate-800/80 border border-slate-700 text-slate-200 hover:border-cyan-400 transition" data-anim="jump">
-                    <i class="fa-solid fa-arrow-up text-amber-400 mr-1"></i> Lompat
-                </button>
-                <button class="mascot-anim-btn px-2 py-1.5 rounded-lg text-xs bg-slate-800/80 border border-slate-700 text-slate-200 hover:border-cyan-400 transition" data-anim="idle">
-                    <i class="fa-solid fa-bed text-slate-400 mr-1"></i> Idle
-                </button>
-            </div>
-        </div>
-    </aside>
+}
 
-    <!-- Right Panel: Recommended Playlists & Direct Embed Launcher -->
-    <aside class="absolute top-24 right-4 z-30 flex flex-col gap-3 pointer-events-auto w-64 max-h-[calc(100vh-180px)]">
-        <div class="glass-panel p-3.5 rounded-2xl border-cyan-500/30 flex flex-col h-full overflow-hidden">
-            <h3 class="font-orbitron text-xs font-bold text-cyan-400 mb-3 uppercase tracking-wider flex items-center justify-between">
-                <span><i class="fa-solid fa-list-ul mr-2"></i> Rekomendasi 3D</span>
-                <span class="text-[10px] bg-cyan-500/20 px-2 py-0.5 rounded text-cyan-300">LIVE</span>
-            </h3>
-            
-            <div id="playlist-container" class="space-y-2 overflow-y-auto pr-1">
-                <!-- Preset Video Cards -->
-                <div class="playlist-card glass-panel p-2 rounded-xl cursor-pointer hover:border-pink-500/60 transition flex gap-2.5 items-center bg-slate-900/60" data-id="jfKfPfyJRdk">
-                    <img src="https://img.youtube.com/vi/jfKfPfyJRdk/hqdefault.jpg" class="w-16 h-10 object-cover rounded-lg border border-slate-700" alt="Lofi">
-                    <div class="overflow-hidden">
-                        <h4 class="text-xs font-semibold text-slate-200 truncate">Lofi Hip Hop Radio</h4>
-                        <p class="text-[10px] text-slate-400">Beats to Relax/Study</p>
-                    </div>
-                </div>
 
-                <div class="playlist-card glass-panel p-2 rounded-xl cursor-pointer hover:border-pink-500/60 transition flex gap-2.5 items-center bg-slate-900/60" data-id="5qap5aO4i9A">
-                    <img src="https://img.youtube.com/vi/5qap5aO4i9A/hqdefault.jpg" class="w-16 h-10 object-cover rounded-lg border border-slate-700" alt="Cyberpunk Music">
-                    <div class="overflow-hidden">
-                        <h4 class="text-xs font-semibold text-slate-200 truncate">Cyberpunk Synthwave</h4>
-                        <p class="text-[10px] text-slate-400">Dark Retro Electronic</p>
-                    </div>
-                </div>
+/* ============================================================
+   CHAT LIST
+   ============================================================ */
 
-                <div class="playlist-card glass-panel p-2 rounded-xl cursor-pointer hover:border-pink-500/60 transition flex gap-2.5 items-center bg-slate-900/60" data-id="21X5lGlDOfg">
-                    <img src="https://img.youtube.com/vi/21X5lGlDOfg/hqdefault.jpg" class="w-16 h-10 object-cover rounded-lg border border-slate-700" alt="4K Cyber City">
-                    <div class="overflow-hidden">
-                        <h4 class="text-xs font-semibold text-slate-200 truncate">Cyberpunk City 4K</h4>
-                        <p class="text-[10px] text-slate-400">Futuristic Drone View</p>
-                    </div>
-                </div>
+function renderChatList(){
 
-                <div class="playlist-card glass-panel p-2 rounded-xl cursor-pointer hover:border-pink-500/60 transition flex gap-2.5 items-center bg-slate-900/60" data-id="1F4906F-M48">
-                    <img src="https://img.youtube.com/vi/1F4906F-M48/hqdefault.jpg" class="w-16 h-10 object-cover rounded-lg border border-slate-700" alt="Unreal Engine 5">
-                    <div class="overflow-hidden">
-                        <h4 class="text-xs font-semibold text-slate-200 truncate">Unreal Engine 5 Demo</h4>
-                        <p class="text-[10px] text-slate-400">Graphics Showcase</p>
-                    </div>
-                </div>
-            </div>
+  if(!chats.length){
 
-            <!-- Web Fallback Feature Banner -->
-            <div class="mt-3 p-2.5 bg-cyan-950/40 border border-cyan-500/30 rounded-xl text-[11px] text-slate-300">
-                <div class="font-bold text-cyan-300 mb-1 flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-halved text-xs"></i> Fallback Direct Embed
-                </div>
-                Jika video mengalami error 150/101 (restriksi pemilik), klik tombol fallback untuk memutar via YouTube web player langsung.
-            </div>
-        </div>
-    </aside>
+    chatList.innerHTML =
+      '<div class="empty">Belum ada percakapan</div>';
 
-    <!-- Bottom Left: WASM Simulator Console -->
-    <div class="absolute bottom-4 left-4 z-30 pointer-events-auto w-80 md:w-96">
-        <div class="glass-panel rounded-2xl overflow-hidden border-cyan-500/30">
-            <!-- Console Header -->
-            <div class="bg-slate-900/90 px-3 py-1.5 border-b border-cyan-500/30 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-[10px] font-mono text-cyan-300 font-bold ml-1">C++ WASM Engine Simulator</span>
-                </div>
-                <span class="text-[9px] font-mono text-slate-400">0x88F2_HUD</span>
-            </div>
-            <!-- Log Output Body -->
-            <div id="wasm-console" class="p-3 console-log-area h-28 overflow-y-auto text-cyan-400 bg-slate-950/80 font-mono text-[10px] space-y-1">
-                <div class="text-emerald-400">[WASM Kernel]: Initializing C++ Mascot Controller...</div>
-                <div class="text-slate-400">[OpenGL Core]: Shaders compiled successfully.</div>
-                <div class="text-cyan-300">[Audio FFT]: Virtual DSP pipeline ready.</div>
-            </div>
-        </div>
+    return;
+
+  }
+
+  chatList.innerHTML =
+    chats
+      .slice()
+      .reverse()
+      .map(function(chat){
+
+        return `
+          <button
+            class="chat-item ${
+              chat.id === activeChatId
+                ? "active"
+                : ""
+            }"
+            data-chat-id="${chat.id}">
+            ${escapeHTML(
+              chat.title || "Chat baru"
+            )}
+          </button>
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* ============================================================
+   MESSAGE UI
+   ============================================================ */
+
+function showWelcome(){
+
+  messagesEl.innerHTML = `
+
+    <div class="welcome">
+
+      <div class="hero-icon">✦</div>
+
+      <h1>Apa yang bisa saya bantu?</h1>
+
+      <p>
+        Saya adalah AI Assistant Pro.
+        Tanya apa saja, buat kode, debug,
+        belajar, menulis, atau cari informasi terbaru.
+      </p>
+
+      <div class="suggestions">
+
+        <button class="suggestion">
+          Buatkan landing page HTML modern
+        </button>
+
+        <button class="suggestion">
+          Jelaskan JavaScript async/await dengan contoh
+        </button>
+
+        <button class="suggestion">
+          Bantu debug kode saya
+        </button>
+
+        <button class="suggestion">
+          Cari informasi terbaru tentang teknologi AI
+        </button>
+
+      </div>
+
     </div>
 
-    <script>
-        // Core State
-        let scene, camera, renderer;
-        let mascotGroup, mascotHead, mascotLeftArm, mascotRightArm, mascotLeftLeg, mascotRightLeg;
-        let lightSpot, ambientLight, gridHelper;
-        let currentAnimation = 'dance';
-        let animClock = 0;
-        let currentMood = 'cyber';
-        let activeVideoId = 'jfKfPfyJRdk';
-        let cameraTargetMode = 'cinema'; // cinema | mascot | orbit
+  `;
 
-        // Orbit controls simulator variables
-        let isMouseDown = false;
-        let mouseX = 0, mouseY = 0;
-        let cameraAngleX = 0, cameraAngleY = 0.2;
+}
 
-        // WASM HUD Simulator Logger
-        function wasmLog(message, type = 'info') {
-            const consoleEl = document.getElementById('wasm-console');
-            if (!consoleEl) return;
-            const entry = document.createElement('div');
-            const now = new Date().toISOString().slice(11, 19);
-            
-            let colorClass = 'text-cyan-300';
-            if (type === 'success') colorClass = 'text-emerald-400';
-            if (type === 'warn') colorClass = 'text-amber-400';
-            if (type === 'error') colorClass = 'text-pink-500';
 
-            entry.className = colorClass;
-            entry.innerHTML = `<span class="text-slate-500">[${now}]</span> ${message}`;
-            consoleEl.appendChild(entry);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
+function addMessage(role,text,scroll=true){
+
+  const row = document.createElement("div");
+
+  row.className =
+    `message ${role}`;
+
+  const avatar =
+    role === "user"
+      ? "U"
+      : "✦";
+
+  row.innerHTML = `
+
+    <div class="avatar">
+      ${avatar}
+    </div>
+
+    <div class="bubble">
+
+      ${
+        role === "assistant"
+          ? renderMarkdown(text)
+          : escapeHTML(text).replace(
+              /\n/g,
+              "<br>"
+            )
+      }
+
+      <div class="meta">
+        ${
+          role === "user"
+            ? "Anda"
+            : "AI Assistant Pro"
+        }
+      </div>
+
+    </div>
+
+  `;
+
+  messagesEl.appendChild(row);
+
+  if(scroll){
+
+    scrollToBottom();
+
+  }
+
+  return row.querySelector(".bubble");
+
+}
+
+
+function renderMessages(){
+
+  const chat = getActiveChat();
+
+  messagesEl.innerHTML = "";
+
+  if(!chat || !chat.messages.length){
+
+    showWelcome();
+
+    return;
+
+  }
+
+  chat.messages.forEach(function(message){
+
+    addMessage(
+      message.role,
+      message.content,
+      false
+    );
+
+  });
+
+  scrollToBottom();
+
+}
+
+
+function scrollToBottom(){
+
+  chatBox.scrollTop =
+    chatBox.scrollHeight;
+
+}
+
+
+/* ============================================================
+   CHAT MANAGEMENT
+   ============================================================ */
+
+function createChat(firstMessage="Chat baru"){
+
+  activeChatId = createId();
+
+  chats.push({
+
+    id: activeChatId,
+
+    title:
+      firstMessage
+        .substring(0,42)
+        .trim() || "Chat baru",
+
+    messages: [],
+
+    createdAt: Date.now()
+
+  });
+
+  saveState();
+
+  return getActiveChat();
+
+}
+
+
+function ensureChat(message){
+
+  let chat = getActiveChat();
+
+  if(!chat){
+
+    chat = createChat(message);
+
+  }
+
+  return chat;
+
+}
+
+
+function newChat(){
+
+  activeChatId = null;
+
+  attachedFile = null;
+
+  fileInput.value = "";
+
+  fileChip.style.display = "none";
+
+  input.value = "";
+
+  saveState();
+
+  renderMessages();
+
+  input.focus();
+
+}
+
+
+function deleteCurrentChat(){
+
+  if(!activeChatId){
+
+    return;
+
+  }
+
+  const chat = getActiveChat();
+
+  if(!chat){
+
+    return;
+
+  }
+
+  const okay =
+    confirm(
+      "Hapus percakapan ini?"
+    );
+
+  if(!okay){
+
+    return;
+
+  }
+
+  chats =
+    chats.filter(
+      c => c.id !== activeChatId
+    );
+
+  activeChatId = null;
+
+  saveState();
+
+  renderMessages();
+
+}
+
+
+/* ============================================================
+   SERVER STATUS
+   ============================================================ */
+
+async function checkServer(){
+
+  try{
+
+    const response =
+      await fetch(
+        `${API_BASE}/api/health`
+      );
+
+    const data =
+      await response.json();
+
+    if(data.configured){
+
+      serverStatus.textContent =
+        `Online • ${data.model || "AI"}`;
+
+    }else{
+
+      serverStatus.textContent =
+        "Server online • API key belum diatur";
+
+    }
+
+  }catch(error){
+
+    serverStatus.textContent =
+      "Backend offline";
+
+  }
+
+}
+
+
+/* ============================================================
+   SEND MESSAGE
+   ============================================================ */
+
+async function sendMessage(){
+
+  const message =
+    input.value.trim();
+
+  if(!message){
+
+    return;
+
+  }
+
+  if(controller){
+
+    return;
+
+  }
+
+  const chat =
+    ensureChat(message);
+
+  if(!chat.messages.length){
+
+    chat.title =
+      message.substring(0,42);
+
+  }
+
+  chat.messages.push({
+
+    role:"user",
+
+    content:message
+
+  });
+
+  addMessage(
+    "user",
+    message
+  );
+
+  input.value = "";
+
+  input.style.height = "55px";
+
+  const assistantBubble =
+    addMessage(
+      "assistant",
+      `<span class="typing">
+        <i></i><i></i><i></i>
+      </span>`
+    );
+
+  chat.messages.push({
+
+    role:"assistant",
+
+    content:""
+
+  });
+
+  const assistantIndex =
+    chat.messages.length - 1;
+
+  sendBtn.disabled = true;
+
+  stopBtn.style.display =
+    "inline-block";
+
+  controller =
+    new AbortController();
+
+  try{
+
+    const response =
+      await fetch(
+        `${API_BASE}/api/chat/stream`,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          signal:
+            controller.signal,
+
+          body:JSON.stringify({
+
+            message,
+
+            history:
+              chat.messages
+                .slice(0,-2),
+
+            mode:
+              modeEl.value,
+
+            webSearch,
+
+            attachment:
+              attachedFile
+
+          })
+
+        }
+      );
+
+
+    if(!response.ok){
+
+      let errorData = {};
+
+      try{
+
+        errorData =
+          await response.json();
+
+      }catch{}
+
+      throw new Error(
+        errorData.error ||
+        `HTTP ${response.status}`
+      );
+
+    }
+
+
+    if(!response.body){
+
+      throw new Error(
+        "Browser tidak mendukung streaming."
+      );
+
+    }
+
+
+    const reader =
+      response.body.getReader();
+
+    const decoder =
+      new TextDecoder();
+
+    let buffer = "";
+
+    assistantBubble.innerHTML = "";
+
+
+    while(true){
+
+      const result =
+        await reader.read();
+
+      if(result.done){
+
+        break;
+
+      }
+
+
+      buffer +=
+        decoder.decode(
+          result.value,
+          {
+            stream:true
+          }
+        );
+
+
+      const events =
+        buffer.split("\n\n");
+
+      buffer =
+        events.pop();
+
+
+      for(const event of events){
+
+        const line =
+          event
+            .split("\n")
+            .find(
+              x =>
+                x.startsWith("data: ")
+            );
+
+        if(!line){
+
+          continue;
+
         }
 
-        function init3D() {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050811, 0.025);
 
-            // Camera Setup
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            // WebGL Renderer Setup
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
+        const payload =
+          line.substring(6);
 
-            // Lights
-            ambientLight = new THREE.AmbientLight(0x00f3ff, 0.6);
-            scene.add(ambientLight);
 
-            lightSpot = new THREE.SpotLight(0xff007f, 3);
-            lightSpot.position.set(0, 15, 10);
-            lightSpot.angle = Math.PI / 4;
-            lightSpot.penumbra = 0.5;
-            lightSpot.castShadow = true;
-            scene.add(lightSpot);
+        if(payload === "[DONE]"){
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(10, 20, -10);
-            scene.add(dirLight);
+          continue;
 
-            // Cinema Stage Floor
-            const stageGeo = new THREE.CylinderGeometry(14, 15, 1, 32);
-            const stageMat = new THREE.MeshStandardMaterial({
-                color: 0x0a0f1d,
-                roughness: 0.3,
-                metalness: 0.8
-            });
-            const stage = new THREE.Mesh(stageGeo, stageMat);
-            stage.position.y = -2;
-            stage.receiveShadow = true;
-            scene.add(stage);
-
-            // Cyber Grid Floor
-            gridHelper = new THREE.GridHelper(60, 60, 0x00f3ff, 0xff007f);
-            gridHelper.position.y = -2.48;
-            scene.add(gridHelper);
-
-            // Cinema Screen Frame Bezel in 3D Space
-            const screenBezelGeo = new THREE.BoxGeometry(16.8, 9.8, 0.4);
-            const screenBezelMat = new THREE.MeshStandardMaterial({
-                color: 0x0d1527,
-                roughness: 0.2,
-                metalness: 0.9,
-                emissive: 0x00f3ff,
-                emissiveIntensity: 0.15
-            });
-            const screenBezel = new THREE.Mesh(screenBezelGeo, screenBezelMat);
-            screenBezel.position.set(0, 4, -8);
-            scene.add(screenBezel);
-
-            // Speaker Towers Side Props
-            createSpeakerTower(-9.5, 3, -7);
-            createSpeakerTower(9.5, 3, -7);
-
-            // Build Procedural Cyber Robot Mascot
-            buildCyberMascot();
-
-            // Handle Camera initial pose
-            updateCameraPose();
-
-            // Event Listeners for Resize & Orbit interaction
-            window.addEventListener('resize', onWindowResize);
-            setupOrbitControls();
-
-            wasmLog('C++ WASM 3D Environment initialised.', 'success');
         }
 
-        function createSpeakerTower(x, y, z) {
-            const group = new THREE.Group();
-            const bodyGeo = new THREE.BoxGeometry(1.5, 8, 1.5);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.4, metalness: 0.8 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            group.add(body);
 
-            // Glowing Rings
-            for(let i = -3; i <= 3; i += 2) {
-                const ringGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 16);
-                const ringMat = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0x00f3ff, emissiveIntensity: 0.8 });
-                const ring = new THREE.Mesh(ringGeo, ringMat);
-                ring.rotation.x = Math.PI / 2;
-                ring.position.set(0, i, 0.76);
-                group.add(ring);
-            }
+        let data;
 
-            group.position.set(x, y, z);
-            scene.add(group);
+        try{
+
+          data =
+            JSON.parse(payload);
+
+        }catch{
+
+          continue;
+
         }
 
-        function buildCyberMascot() {
-            mascotGroup = new THREE.Group();
 
-            // Torso / Body
-            const bodyGeo = new THREE.BoxGeometry(1.2, 1.5, 0.8);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 1;
-            body.castShadow = true;
-            mascotGroup.add(body);
+        if(data.type === "delta"){
 
-            // Chest Core Crystal
-            const coreGeo = new THREE.OctahedronGeometry(0.3);
-            const coreMat = new THREE.MeshStandardMaterial({ color: 0x00f3ff, emissive: 0x00f3ff, emissiveIntensity: 1 });
-            const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.set(0, 1.1, 0.45);
-            mascotGroup.add(core);
+          chat.messages[
+            assistantIndex
+          ].content +=
+            data.text;
 
-            // Head
-            mascotHead = new THREE.Group();
-            const headGeo = new THREE.BoxGeometry(0.9, 0.8, 0.8);
-            const headMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.1 });
-            const headMesh = new THREE.Mesh(headGeo, headMat);
-            mascotHead.add(headMesh);
+          assistantBubble.innerHTML =
+            renderMarkdown(
+              chat.messages[
+                assistantIndex
+              ].content
+            );
 
-            // Visor Eye Screen
-            const visorGeo = new THREE.BoxGeometry(0.7, 0.3, 0.1);
-            const visorMat = new THREE.MeshStandardMaterial({ color: 0xff007f, emissive: 0xff007f, emissiveIntensity: 1.2 });
-            const visor = new THREE.Mesh(visorGeo, visorMat);
-            visor.position.set(0, 0.05, 0.41);
-            mascotHead.add(visor);
+          scrollToBottom();
 
-            mascotHead.position.set(0, 2.1, 0);
-            mascotGroup.add(mascotHead);
-
-            // Left Arm
-            mascotLeftArm = new THREE.Group();
-            const armGeo = new THREE.CylinderGeometry(0.18, 0.15, 1.2);
-            const armMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 });
-            const leftArmMesh = new THREE.Mesh(armGeo, armMat);
-            leftArmMesh.position.y = -0.6;
-            mascotLeftArm.add(leftArmMesh);
-            mascotLeftArm.position.set(-0.85, 1.6, 0);
-            mascotGroup.add(mascotLeftArm);
-
-            // Right Arm
-            mascotRightArm = new THREE.Group();
-            const rightArmMesh = new THREE.Mesh(armGeo, armMat);
-            rightArmMesh.position.y = -0.6;
-            mascotRightArm.add(rightArmMesh);
-            mascotRightArm.position.set(0.85, 1.6, 0);
-            mascotGroup.add(mascotRightArm);
-
-            // Legs
-            const legGeo = new THREE.CylinderGeometry(0.2, 0.18, 1.2);
-            mascotLeftLeg = new THREE.Group();
-            const lLeg = new THREE.Mesh(legGeo, armMat);
-            lLeg.position.y = -0.6;
-            mascotLeftLeg.add(lLeg);
-            mascotLeftLeg.position.set(-0.35, 0.2, 0);
-            mascotGroup.add(mascotLeftLeg);
-
-            mascotRightLeg = new THREE.Group();
-            const rLeg = new THREE.Mesh(legGeo, armMat);
-            rLeg.position.y = -0.6;
-            mascotRightLeg.add(rLeg);
-            mascotRightLeg.position.set(0.35, 0.2, 0);
-            mascotGroup.add(mascotRightLeg);
-
-            // Set Mascot Position on Stage front
-            mascotGroup.position.set(0, -1.8, 1.5);
-            mascotGroup.scale.set(1.2, 1.2, 1.2);
-            scene.add(mascotGroup);
         }
 
-        function animateMascot() {
-            animClock += 0.05;
 
-            if (currentAnimation === 'dance') {
-                mascotGroup.position.y = -1.8 + Math.abs(Math.sin(animClock * 3)) * 0.4;
-                mascotGroup.rotation.y = Math.sin(animClock * 2) * 0.3;
-                
-                mascotLeftArm.rotation.z = Math.sin(animClock * 4) * 0.8 + 0.5;
-                mascotRightArm.rotation.z = -Math.sin(animClock * 4) * 0.8 - 0.5;
-                
-                mascotHead.rotation.x = Math.sin(animClock * 3) * 0.2;
-                mascotHead.rotation.z = Math.cos(animClock * 3) * 0.2;
+        if(data.type === "error"){
 
-                mascotLeftLeg.rotation.x = Math.sin(animClock * 4) * 0.5;
-                mascotRightLeg.rotation.x = -Math.sin(animClock * 4) * 0.5;
-            } 
-            else if (currentAnimation === 'wave') {
-                mascotGroup.position.y = -1.8;
-                mascotGroup.rotation.y = -0.2;
+          throw new Error(
+            data.error ||
+            "AI streaming error"
+          );
 
-                mascotRightArm.rotation.z = Math.PI - 0.3 + Math.sin(animClock * 8) * 0.4;
-                mascotLeftArm.rotation.z = 0.2;
-
-                mascotHead.rotation.y = 0.2;
-                mascotHead.rotation.z = Math.sin(animClock * 2) * 0.1;
-
-                mascotLeftLeg.rotation.x = 0;
-                mascotRightLeg.rotation.x = 0;
-            }
-            else if (currentAnimation === 'jump') {
-                const jumpProgress = Math.sin(animClock * 4);
-                mascotGroup.position.y = -1.8 + Math.max(0, jumpProgress * 1.5);
-
-                mascotLeftArm.rotation.z = Math.PI - 0.5;
-                mascotRightArm.rotation.z = -Math.PI + 0.5;
-
-                mascotLeftLeg.rotation.x = -0.4;
-                mascotRightLeg.rotation.x = -0.4;
-            }
-            else { // Idle
-                mascotGroup.position.y = -1.8 + Math.sin(animClock * 1.5) * 0.05;
-                mascotGroup.rotation.y = 0;
-
-                mascotLeftArm.rotation.z = 0.2 + Math.sin(animClock * 1.5) * 0.05;
-                mascotRightArm.rotation.z = -0.2 - Math.sin(animClock * 1.5) * 0.05;
-
-                mascotHead.rotation.x = Math.sin(animClock * 1.5) * 0.05;
-                mascotHead.rotation.y = 0;
-
-                mascotLeftLeg.rotation.x = 0;
-                mascotRightLeg.rotation.x = 0;
-            }
         }
 
-        function updateCameraPose() {
-            if (cameraTargetMode === 'cinema') {
-                camera.position.set(0, 3, 11);
-                camera.lookAt(0, 3, -8);
-            } else if (cameraTargetMode === 'mascot') {
-                camera.position.set(0, -0.5, 5);
-                camera.lookAt(0, -0.5, 0);
-            } else if (cameraTargetMode === 'orbit') {
-                camera.position.x = 18 * Math.sin(cameraAngleX);
-                camera.position.z = 18 * Math.cos(cameraAngleX);
-                camera.position.y = 3 + cameraAngleY * 10;
-                camera.lookAt(0, 2, -2);
-            }
-            syncOverlayBezel();
-        }
+      }
 
-        // Align HTML iframe with 3D screen bezel projection
-        function syncOverlayBezel() {
-            const wrapper = document.getElementById('screen-bezel-wrapper');
-            if (!wrapper) return;
+    }
 
-            if (cameraTargetMode === 'cinema') {
-                wrapper.style.width = '70vw';
-                wrapper.style.height = '39.375vw'; // 16:9 ratio
-                wrapper.style.maxHeight = '65vh';
-                wrapper.style.maxWidth = '115vh';
-                wrapper.style.opacity = '1';
-                wrapper.style.pointerEvents = 'auto';
-            } else if (cameraTargetMode === 'mascot') {
-                wrapper.style.width = '30vw';
-                wrapper.style.height = '16.875vw';
-                wrapper.style.opacity = '0.3';
-                wrapper.style.pointerEvents = 'none';
-            } else {
-                wrapper.style.width = '50vw';
-                wrapper.style.height = '28.125vw';
-                wrapper.style.opacity = '0.85';
-                wrapper.style.pointerEvents = 'auto';
-            }
-        }
 
-        function setupOrbitControls() {
-            window.addEventListener('mousedown', (e) => {
-                if (e.target.tagName === 'CANVAS') {
-                    isMouseDown = true;
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                }
-            });
+    if(
+      !chat.messages[
+        assistantIndex
+      ].content
+    ){
 
-            window.addEventListener('mouseup', () => { isMouseDown = false; });
+      chat.messages[
+        assistantIndex
+      ].content =
+        "AI tidak mengembalikan teks.";
 
-            window.addEventListener('mousemove', (e) => {
-                if (isMouseDown && cameraTargetMode === 'orbit') {
-                    const deltaX = e.clientX - mouseX;
-                    const deltaY = e.clientY - mouseY;
-                    cameraAngleX -= deltaX * 0.005;
-                    cameraAngleY = Math.max(-0.4, Math.min(0.8, cameraAngleY + deltaY * 0.005));
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                    updateCameraPose();
-                }
-            });
-        }
+    }
 
-        function extractYouTubeId(url) {
-            if (!url) return null;
-            url = url.trim();
-            // Direct ID check
-            if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
 
-            // YouTube URL regex rules
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
+    saveState();
 
-        function loadYouTubeVideo(videoInput) {
-            const videoId = extractYouTubeId(videoInput);
-            if (!videoId) {
-                wasmLog('URL YouTube tidak valid. Coba link standar atau ID.', 'error');
-                return;
-            }
+  }catch(error){
 
-            activeVideoId = videoId;
-            const iframe = document.getElementById('youtube-iframe');
-            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=0`;
-            
-            // Hide fallback alert
-            document.getElementById('iframe-fallback-banner').classList.add('hidden');
+    if(
+      error.name ===
+      "AbortError"
+    ){
 
-            wasmLog(`Loaded YouTube Video ID: ${videoId}`, 'success');
-            
-            // Trigger mascot dance when new video is set
-            currentAnimation = 'dance';
-        }
+      if(
+        !chat.messages[
+          assistantIndex
+        ].content
+      ){
 
-        function setupUIHandlers() {
-            // Load Video Input Button
-            document.getElementById('load-video-btn').addEventListener('click', () => {
-                const input = document.getElementById('youtube-url-input').value;
-                loadYouTubeVideo(input);
-            });
+        chat.messages[
+          assistantIndex
+        ].content =
+          "Generasi dihentikan.";
 
-            document.getElementById('youtube-url-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    loadYouTubeVideo(e.target.value);
-                }
-            });
+      }
 
-            // Direct Fallback Button
-            document.getElementById('open-direct-youtube-btn').addEventListener('click', () => {
-                if (activeVideoId) {
-                    window.open(`https://www.youtube.com/watch?v=${activeVideoId}`, '_blank');
-                }
-            });
+      assistantBubble.innerHTML =
+        "<p>Generasi dihentikan.</p>";
 
-            // Camera Presets
-            document.querySelectorAll('.cam-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const mode = btn.getAttribute('data-cam');
-                    cameraTargetMode = mode;
-                    
-                    document.querySelectorAll('.cam-btn').forEach(b => {
-                        b.classList.remove('bg-cyan-500/20', 'border-cyan-500/40', 'text-cyan-300');
-                        b.classList.add('bg-slate-800/60', 'border-slate-700/50', 'text-slate-300');
-                    });
-                    btn.classList.add('bg-cyan-500/20', 'border-cyan-500/40', 'text-cyan-300');
+    }else{
 
-                    updateCameraPose();
-                    wasmLog(`Switched Camera mode to: ${mode.toUpperCase()}`, 'info');
-                });
-            });
+      chat.messages[
+        assistantIndex
+      ].content =
+        `Gagal terhubung ke AI: ${error.message}`;
 
-            // Ambient Moods
-            document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const mood = btn.getAttribute('data-mood');
-                    setLightingMood(mood);
-                });
-            });
+      assistantBubble.innerHTML = `
 
-            // Mascot Actions
-            document.querySelectorAll('.mascot-anim-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const anim = btn.getAttribute('data-anim');
-                    currentAnimation = anim;
-                    wasmLog(`Mascot animation updated: ${anim.toUpperCase()}`, 'info');
-                });
-            });
+        <p>
+          <strong style="color:#ff9fab">
+            Gagal:
+          </strong>
+          ${escapeHTML(error.message)}
+        </p>
 
-            // Playlist Item Click
-            document.querySelectorAll('.playlist-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const id = card.getAttribute('data-id');
-                    loadYouTubeVideo(id);
-                });
-            });
-        }
+        <p style="color:#8da0b8;font-size:12px">
+          Pastikan server.js berjalan
+          di localhost:3000.
+        </p>
 
-        function setLightingMood(mood) {
-            currentMood = mood;
-            if (mood === 'cyber') {
-                ambientLight.color.setHex(0x00f3ff);
-                lightSpot.color.setHex(0xff007f);
-                scene.fog.color.setHex(0x050811);
-            } else if (mood === 'sunset') {
-                ambientLight.color.setHex(0xffaa00);
-                lightSpot.color.setHex(0xff0055);
-                scene.fog.color.setHex(0x1a0b18);
-            } else if (mood === 'pink') {
-                ambientLight.color.setHex(0xff00aa);
-                lightSpot.color.setHex(0x00ffff);
-                scene.fog.color.setHex(0x15051a);
-            } else if (mood === 'matrix') {
-                ambientLight.color.setHex(0x00ff66);
-                lightSpot.color.setHex(0x003311);
-                scene.fog.color.setHex(0x021208);
-            }
-            wasmLog(`Lighting Mood set to: ${mood.toUpperCase()}`, 'info');
-        }
+      `;
 
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            syncOverlayBezel();
-        }
+    }
 
-        let frameCount = 0;
-        let lastTime = performance.now();
+    saveState();
 
-        function animate() {
-            requestAnimationFrame(animate);
+  }finally{
 
-            // FPS Calculation
-            frameCount++;
-            const now = performance.now();
-            if (now - lastTime >= 1000) {
-                document.getElementById('fps-counter').innerText = frameCount;
-                frameCount = 0;
-                lastTime = now;
-            }
+    controller = null;
 
-            // Animate Mascot Robot
-            animateMascot();
+    sendBtn.disabled = false;
 
-            // Light spot pulsation
-            lightSpot.intensity = 2.5 + Math.sin(animClock * 3) * 0.8;
+    stopBtn.style.display =
+      "none";
 
-            renderer.render(scene, camera);
-        }
+    attachedFile = null;
 
-        // Start initialization on window load
-        window.onload = function() {
-            init3D();
-            setupUIHandlers();
-            animate();
+    fileInput.value = "";
 
-            // Periodic Simulated C++ WASM Telemetry Logs
-            setInterval(() => {
-                const logs = [
-                    "Telemetry tick: DSP FFT sync nominal.",
-                    "Mesh buffer validated at 60 FPS.",
-                    "Audio peak analyzer: 128-band pass active.",
-                    "Mascot kinematic state synced with video stream."
-                ];
-                const randomLog = logs[Math.floor(Math.random() * logs.length)];
-                wasmLog(`[WASM Core] ${randomLog}`, 'info');
-            }, 8000);
-        };
-    </script>
+    fileChip.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* ============================================================
+   FILE UPLOAD
+   ============================================================ */
+
+fileInput.addEventListener(
+  "change",
+  async function(){
+
+    const file =
+      fileInput.files[0];
+
+    if(!file){
+
+      return;
+
+    }
+
+    try{
+
+      const text =
+        await file.text();
+
+      attachedFile = {
+
+        name:file.name,
+
+        text:
+          text.substring(
+            0,
+            50000
+          )
+
+      };
+
+
+      fileChip.style.display =
+        "flex";
+
+
+      fileChip.innerHTML = `
+
+        <span>
+          📎
+          ${escapeHTML(file.name)}
+          •
+          ${Math.round(file.size/1024)}
+          KB
+        </span>
+
+        <button
+          class="remove-file"
+          id="removeFile">
+          ×
+        </button>
+
+      `;
+
+    }catch(error){
+
+      alert(
+        "File tidak dapat dibaca."
+      );
+
+    }
+
+  }
+);
+
+
+fileChip.addEventListener(
+  "click",
+  function(event){
+
+    if(
+      event.target.id ===
+      "removeFile"
+    ){
+
+      attachedFile = null;
+
+      fileInput.value = "";
+
+      fileChip.style.display =
+        "none";
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   WEB SEARCH
+   ============================================================ */
+
+webBtn.addEventListener(
+  "click",
+  function(){
+
+    webSearch =
+      !webSearch;
+
+    webBtn.textContent =
+      `🌐 Web Search: ${
+        webSearch
+          ? "ON"
+          : "OFF"
+      }`;
+
+    webBtn.classList.toggle(
+      "active",
+      webSearch
+    );
+
+  }
+);
+
+
+/* ============================================================
+   TEXTAREA
+   ============================================================ */
+
+input.addEventListener(
+  "input",
+  function(){
+
+    input.style.height =
+      "auto";
+
+    input.style.height =
+      Math.min(
+        input.scrollHeight,
+        180
+      ) + "px";
+
+  }
+);
+
+
+input.addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      event.key === "Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+sendBtn.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+newChatBtn.addEventListener(
+  "click",
+  newChat
+);
+
+
+clearChatBtn.addEventListener(
+  "click",
+  deleteCurrentChat
+);
+
+
+stopBtn.addEventListener(
+  "click",
+  function(){
+
+    if(controller){
+
+      controller.abort();
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   SUGGESTIONS + COPY
+   ============================================================ */
+
+messagesEl.addEventListener(
+  "click",
+  function(event){
+
+    const suggestion =
+      event.target.closest(
+        ".suggestion"
+      );
+
+    if(suggestion){
+
+      input.value =
+        suggestion.textContent.trim();
+
+      input.focus();
+
+      input.dispatchEvent(
+        new Event("input")
+      );
+
+      return;
+
+    }
+
+
+    const copyButton =
+      event.target.closest(
+        ".copy-btn"
+      );
+
+    if(copyButton){
+
+      const code =
+        decodeURIComponent(
+          copyButton.dataset.code
+        );
+
+      navigator.clipboard
+        .writeText(code)
+        .then(function(){
+
+          const old =
+            copyButton.textContent;
+
+          copyButton.textContent =
+            "Tersalin ✓";
+
+          setTimeout(
+            function(){
+
+              copyButton.textContent =
+                old;
+
+            },
+            1300
+          );
+
+        });
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   CHAT SELECT
+   ============================================================ */
+
+chatList.addEventListener(
+  "click",
+  function(event){
+
+    const button =
+      event.target.closest(
+        "[data-chat-id]"
+      );
+
+    if(!button){
+
+      return;
+
+    }
+
+    activeChatId =
+      button.dataset.chatId;
+
+    localStorage.setItem(
+      "ai_assistant_pro_active",
+      activeChatId
+    );
+
+    renderChatList();
+
+    renderMessages();
+
+    input.focus();
+
+  }
+);
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+renderChatList();
+
+renderMessages();
+
+checkServer();
+
+input.focus();
+
+</script>
+
 </body>
 </html>
