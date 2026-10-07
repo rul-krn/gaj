@@ -4,9 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#07101d">
-<title>AI Assistant Pro</title>
+<title>Fahrul AI — AI Assistant Pro</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
+}
+
 :root{
 --bg:#07101d;
 --bg2:#0a1422;
@@ -17,56 +23,89 @@
 --muted:#8da0b8;
 --accent:#38bdf8;
 --accent2:#2563eb;
+--purple:#7c3aed;
 --user:#075985;
 --success:#22c55e;
---danger:#ef4444
+--danger:#ef4444;
+--warning:#f59e0b
 }
-html,body{width:100%;height:100%;overflow:hidden}
+
+html,
+body{
+width:100%;
+height:100%;
+overflow:hidden
+}
+
 body{
 font-family:Inter,"Segoe UI",Arial,sans-serif;
-background:radial-gradient(circle at top,#142a44 0,#07101d 45%,#040a12 100%);
+background:
+radial-gradient(circle at top,#142a44 0,#07101d 45%,#040a12 100%);
 color:var(--text)
 }
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
+
+button,
+input,
+textarea,
+select{
+font:inherit
+}
+
+button{
+cursor:pointer
+}
+
 .app{
 height:100vh;
 display:grid;
 grid-template-columns:260px minmax(0,1fr);
 overflow:hidden
 }
+
+/* =========================================================
+SIDEBAR
+========================================================= */
+
 .sidebar{
-background:rgba(6,13,23,.94);
+background:rgba(6,13,23,.96);
 border-right:1px solid var(--border);
 display:flex;
 flex-direction:column;
 padding:14px;
 gap:14px
 }
+
 .brand{
 display:flex;
 align-items:center;
 gap:10px;
 padding:8px 4px 14px
 }
+
 .logo{
-width:40px;
-height:40px;
-border-radius:12px;
+width:42px;
+height:42px;
+border-radius:13px;
 display:grid;
 place-items:center;
 background:linear-gradient(135deg,#38bdf8,#6366f1);
 box-shadow:0 8px 30px rgba(56,189,248,.2);
 font-weight:900;
-color:#00111d
+color:#00111d;
+font-size:14px
 }
-.brand b{font-size:16px}
+
+.brand b{
+font-size:16px
+}
+
 .brand span{
 display:block;
 font-size:11px;
 color:var(--muted);
 margin-top:2px
 }
+
 .new-chat{
 width:100%;
 padding:11px;
@@ -76,10 +115,12 @@ background:#102239;
 color:#e5f7ff;
 font-weight:700
 }
+
 .new-chat:hover{
 background:#14304a;
 border-color:var(--accent)
 }
+
 .side-title{
 font-size:10px;
 letter-spacing:1.2px;
@@ -87,6 +128,7 @@ text-transform:uppercase;
 color:#61758d;
 margin:5px 4px
 }
+
 .chat-list{
 flex:1;
 overflow:auto;
@@ -94,6 +136,7 @@ display:flex;
 flex-direction:column;
 gap:5px
 }
+
 .chat-item{
 width:100%;
 border:1px solid transparent;
@@ -106,16 +149,19 @@ white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis
 }
+
 .chat-item:hover,
 .chat-item.active{
 background:#101f32;
 border-color:#1f3852;
 color:#fff
 }
+
 .sidebar-bottom{
 border-top:1px solid var(--border);
 padding-top:12px
 }
+
 .status{
 display:flex;
 align-items:center;
@@ -123,18 +169,35 @@ gap:8px;
 font-size:11px;
 color:var(--muted)
 }
+
 .online-dot{
 width:8px;
 height:8px;
 border-radius:50%;
+background:var(--warning);
+box-shadow:0 0 12px rgba(245,158,11,.7)
+}
+
+.online-dot.ready{
 background:var(--success);
 box-shadow:0 0 12px rgba(34,197,94,.7)
 }
+
+.online-dot.error{
+background:var(--danger);
+box-shadow:0 0 12px rgba(239,68,68,.7)
+}
+
+/* =========================================================
+MAIN
+========================================================= */
+
 .main{
 min-width:0;
 display:flex;
 flex-direction:column
 }
+
 .header{
 height:64px;
 display:flex;
@@ -142,22 +205,26 @@ align-items:center;
 justify-content:space-between;
 padding:0 18px;
 border-bottom:1px solid var(--border);
-background:rgba(8,17,30,.75);
+background:rgba(8,17,30,.78);
 backdrop-filter:blur(18px)
 }
+
 .header-title{
 font-weight:800
 }
+
 .header-sub{
 font-size:11px;
 color:var(--muted);
 margin-top:2px
 }
+
 .header-actions{
 display:flex;
 align-items:center;
 gap:7px
 }
+
 select,
 .icon-btn{
 border:1px solid var(--border);
@@ -165,20 +232,31 @@ background:#0e1b2c;
 color:#dce8f7;
 border-radius:9px
 }
-select{padding:8px 10px}
+
+select{
+padding:8px 10px
+}
+
 .icon-btn{
 width:38px;
 height:38px
 }
+
 .icon-btn:hover{
 border-color:#3a5d7d;
 background:#12243a
 }
+
+/* =========================================================
+CHAT
+========================================================= */
+
 .chat{
 flex:1;
 overflow-y:auto;
 padding:25px 16px 155px
 }
+
 .messages{
 max-width:900px;
 margin:auto;
@@ -186,27 +264,59 @@ display:flex;
 flex-direction:column;
 gap:18px
 }
+
 .welcome{
 text-align:center;
-padding:8vh 10px 30px
+padding:7vh 10px 30px
 }
+
 .hero-icon{
-font-size:48px;
+font-size:52px;
 margin-bottom:14px;
 background:linear-gradient(135deg,#38bdf8,#8b5cf6);
 -webkit-background-clip:text;
+background-clip:text;
 color:transparent
 }
+
 .welcome h1{
 font-size:32px;
 letter-spacing:-1px
 }
+
 .welcome p{
-max-width:650px;
+max-width:680px;
 margin:10px auto 0;
 color:var(--muted);
 line-height:1.6
 }
+
+.local-badge{
+display:inline-flex;
+align-items:center;
+gap:7px;
+margin-top:15px;
+padding:7px 11px;
+border:1px solid #28455f;
+border-radius:999px;
+background:#0d1b2b;
+color:#9edfff;
+font-size:11px
+}
+
+.local-badge span{
+width:7px;
+height:7px;
+border-radius:50%;
+background:var(--warning);
+box-shadow:0 0 8px rgba(245,158,11,.6)
+}
+
+.local-badge.ready span{
+background:var(--success);
+box-shadow:0 0 8px rgba(34,197,94,.6)
+}
+
 .suggestions{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -214,6 +324,7 @@ gap:10px;
 max-width:720px;
 margin:28px auto
 }
+
 .suggestion{
 padding:13px;
 text-align:left;
@@ -223,16 +334,23 @@ border-radius:12px;
 color:#cbd9e9;
 transition:.2s
 }
+
 .suggestion:hover{
 background:#10263b;
 border-color:#37627f;
 transform:translateY(-1px)
 }
+
+/* =========================================================
+MESSAGE
+========================================================= */
+
 .message{
 display:flex;
 align-items:flex-start;
 gap:11px
 }
+
 .avatar{
 width:34px;
 height:34px;
@@ -243,58 +361,78 @@ place-items:center;
 font-weight:800;
 font-size:13px
 }
+
 .message.user .avatar{
 background:#086d9e
 }
+
 .message.assistant .avatar{
 background:linear-gradient(135deg,#2563eb,#7c3aed)
 }
+
 .bubble{
 min-width:0;
 max-width:calc(100% - 46px);
 color:#dce7f5;
-line-height:1.65
+line-height:1.65;
+word-break:break-word
 }
+
 .message.user .bubble{
 background:linear-gradient(135deg,#075985,#0369a1);
 color:white;
 padding:11px 14px;
 border-radius:14px 14px 3px 14px;
-white-space:normal;
-word-break:break-word
+white-space:normal
 }
+
 .message.assistant .bubble{
-padding:2px 0;
-word-break:break-word
+padding:2px 0
 }
+
 .meta{
 font-size:10px;
 color:#667b94;
 margin-top:5px
 }
+
 .bubble p{
 margin:7px 0
 }
+
 .bubble h1,
 .bubble h2,
 .bubble h3{
 margin:17px 0 8px;
 color:white
 }
+
 .bubble ul,
 .bubble ol{
 margin:8px 0 8px 22px
 }
+
 .bubble li{
 margin:4px 0
 }
-.bubble strong{color:#fff}
-.bubble em{color:#c6d8eb}
+
+.bubble strong{
+color:#fff
+}
+
+.bubble em{
+color:#c6d8eb
+}
+
 .bubble a{
 color:#67d3ff;
 text-decoration:none
 }
-.bubble a:hover{text-decoration:underline}
+
+.bubble a:hover{
+text-decoration:underline
+}
+
 .inline-code{
 background:#142235;
 border:1px solid #263d56;
@@ -303,6 +441,11 @@ border-radius:5px;
 font-family:Consolas,monospace;
 font-size:.9em
 }
+
+/* =========================================================
+CODE
+========================================================= */
+
 .code-wrap{
 margin:12px 0;
 background:#060b12;
@@ -310,8 +453,9 @@ border:1px solid #263b54;
 border-radius:12px;
 overflow:hidden
 }
+
 .code-head{
-height:35px;
+min-height:35px;
 display:flex;
 align-items:center;
 justify-content:space-between;
@@ -321,6 +465,7 @@ border-bottom:1px solid #1e3148;
 color:#8296ad;
 font-size:11px
 }
+
 .copy-btn{
 border:1px solid #2b425b;
 background:#172538;
@@ -329,10 +474,12 @@ border-radius:6px;
 padding:4px 8px;
 font-size:11px
 }
+
 .copy-btn:hover{
 background:#21344b;
 color:#fff
 }
+
 pre{
 margin:0;
 padding:14px;
@@ -343,6 +490,11 @@ line-height:1.55;
 color:#d9f2ff;
 white-space:pre
 }
+
+/* =========================================================
+TYPING
+========================================================= */
+
 .typing{
 display:inline-flex;
 align-items:center;
@@ -352,6 +504,7 @@ border-radius:11px;
 background:#0e1b2c;
 border:1px solid #22354d
 }
+
 .typing i{
 width:6px;
 height:6px;
@@ -359,20 +512,42 @@ border-radius:50%;
 background:#38bdf8;
 animation:typing 1s infinite
 }
-.typing i:nth-child(2){animation-delay:.15s}
-.typing i:nth-child(3){animation-delay:.3s}
-@keyframes typing{
-0%,100%{transform:translateY(0);opacity:.35}
-50%{transform:translateY(-4px);opacity:1}
+
+.typing i:nth-child(2){
+animation-delay:.15s
 }
+
+.typing i:nth-child(3){
+animation-delay:.3s
+}
+
+@keyframes typing{
+0%,100%{
+transform:translateY(0);
+opacity:.35
+}
+50%{
+transform:translateY(-4px);
+opacity:1
+}
+}
+
+/* =========================================================
+COMPOSER
+========================================================= */
+
 .composer-area{
 position:fixed;
 left:260px;
 right:0;
 bottom:0;
 padding:10px 16px 16px;
-background:linear-gradient(transparent,rgba(4,10,18,.98) 30%)
+background:linear-gradient(
+transparent,
+rgba(4,10,18,.98) 30%
+)
 }
+
 .composer{
 max-width:900px;
 margin:auto;
@@ -382,13 +557,16 @@ border-radius:17px;
 overflow:hidden;
 box-shadow:0 -10px 45px rgba(0,0,0,.3)
 }
+
 .tools{
 display:flex;
 align-items:center;
 gap:6px;
 padding:8px 10px;
-border-bottom:1px solid #203148
+border-bottom:1px solid #203148;
+flex-wrap:wrap
 }
+
 .tool{
 border:1px solid transparent;
 background:transparent;
@@ -397,13 +575,18 @@ border-radius:7px;
 padding:5px 8px;
 font-size:12px
 }
+
 .tool:hover,
 .tool.active{
 background:#13243a;
 border-color:#294761;
 color:#e1f7ff
 }
-.file-label input{display:none}
+
+.file-label input{
+display:none
+}
+
 textarea{
 width:100%;
 min-height:55px;
@@ -417,12 +600,17 @@ padding:13px 14px;
 font-size:15px;
 line-height:1.5
 }
-textarea::placeholder{color:#60758d}
+
+textarea::placeholder{
+color:#60758d
+}
+
 .send-row{
 display:flex;
 justify-content:flex-end;
 padding:7px
 }
+
 .send{
 width:43px;
 height:38px;
@@ -433,13 +621,16 @@ color:white;
 font-size:18px;
 box-shadow:0 4px 15px rgba(37,99,235,.25)
 }
+
 .send:hover{
 filter:brightness(1.1)
 }
+
 .send:disabled{
 opacity:.4;
 cursor:not-allowed
 }
+
 .stop{
 display:none;
 border:1px solid #63303a;
@@ -449,6 +640,7 @@ border-radius:8px;
 padding:6px 10px;
 font-size:11px
 }
+
 .file-chip{
 display:none;
 align-items:center;
@@ -462,124 +654,689 @@ border-radius:8px;
 font-size:12px;
 color:#a9c9df
 }
+
 .remove-file{
 background:transparent;
 border:0;
 color:#94a3b8;
 font-size:17px
 }
+
 .empty{
 text-align:center;
 color:#60758d;
 font-size:12px;
 padding:20px
 }
+
+/* =========================================================
+MODEL PANEL
+========================================================= */
+
+.model-panel{
+position:fixed;
+right:18px;
+top:76px;
+width:330px;
+z-index:50;
+display:none;
+background:#0b1727;
+border:1px solid #29415c;
+border-radius:14px;
+box-shadow:0 25px 70px rgba(0,0,0,.5);
+overflow:hidden
+}
+
+.model-panel.active{
+display:block
+}
+
+.model-panel-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:13px;
+border-bottom:1px solid #21354b
+}
+
+.model-panel-head strong{
+font-size:13px
+}
+
+.close-panel{
+border:0;
+background:transparent;
+color:#8fa4bb;
+font-size:18px
+}
+
+.model-content{
+padding:13px
+}
+
+.model-content label{
+display:block;
+font-size:11px;
+color:#8296ad;
+margin-bottom:6px
+}
+
+.model-select{
+width:100%;
+padding:9px;
+margin-bottom:12px
+}
+
+.key-box{
+display:flex;
+align-items:center;
+gap:7px;
+padding:9px 10px;
+background:#07111e;
+border:1px solid #21354b;
+border-radius:9px;
+font-family:Consolas,monospace;
+font-size:12px;
+color:#8fa4bb
+}
+
+.model-info{
+margin-top:12px;
+font-size:11px;
+line-height:1.55;
+color:#758aa2
+}
+
+.load-model{
+width:100%;
+margin-top:13px;
+padding:10px;
+border:1px solid #24577b;
+background:#0e314a;
+color:#bcecff;
+border-radius:9px;
+font-weight:700
+}
+
+.load-model:hover{
+background:#124363
+}
+
+.progress-box{
+display:none;
+margin-top:12px
+}
+
+.progress-box.active{
+display:block
+}
+
+.progress-track{
+height:7px;
+background:#101d2d;
+border-radius:999px;
+overflow:hidden
+}
+
+.progress-bar{
+height:100%;
+width:0;
+background:linear-gradient(90deg,#38bdf8,#7c3aed);
+transition:width .2s
+}
+
+.progress-text{
+margin-top:6px;
+font-size:10px;
+color:#8095ac
+}
+
+/* =========================================================
+SETTINGS MODAL
+========================================================= */
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(7px);
+z-index:100;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.modal.active{
+display:flex
+}
+
+.modal-card{
+width:min(520px,100%);
+background:#0b1727;
+border:1px solid #29415c;
+border-radius:16px;
+box-shadow:0 30px 90px rgba(0,0,0,.65);
+overflow:hidden
+}
+
+.modal-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 17px;
+border-bottom:1px solid #21354b
+}
+
+.modal-head strong{
+font-size:15px
+}
+
+.modal-close{
+border:0;
+background:transparent;
+color:#91a6bd;
+font-size:20px
+}
+
+.modal-body{
+padding:17px
+}
+
+.setting-row{
+padding:12px 0;
+border-bottom:1px solid #17283b
+}
+
+.setting-row:last-child{
+border-bottom:0
+}
+
+.setting-label{
+font-size:11px;
+color:#8095ac;
+margin-bottom:7px
+}
+
+.setting-value{
+font-size:13px;
+color:#e5effa
+}
+
+.danger-btn{
+margin-top:8px;
+padding:8px 10px;
+border:1px solid #60313a;
+background:#32151c;
+color:#ffb2bd;
+border-radius:8px
+}
+
+/* =========================================================
+LOADING SCREEN
+========================================================= */
+
+.start-screen{
+position:fixed;
+inset:0;
+z-index:200;
+display:flex;
+align-items:center;
+justify-content:center;
+background:
+radial-gradient(
+circle at center,
+#132a45 0,
+#07101d 55%,
+#03070d 100%
+);
+padding:20px
+}
+
+.start-card{
+width:min(580px,100%);
+text-align:center;
+padding:35px;
+border:1px solid #28445f;
+background:rgba(8,18,31,.88);
+border-radius:22px;
+box-shadow:0 35px 100px rgba(0,0,0,.55)
+}
+
+.start-logo{
+width:74px;
+height:74px;
+margin:0 auto 18px;
+border-radius:22px;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,#38bdf8,#7c3aed);
+color:#02101c;
+font-weight:1000;
+font-size:20px;
+box-shadow:0 15px 45px rgba(56,189,248,.25)
+}
+
+.start-card h1{
+font-size:30px;
+margin-bottom:8px
+}
+
+.start-card p{
+color:#8195ad;
+line-height:1.65;
+font-size:13px;
+max-width:480px;
+margin:auto
+}
+
+.start-model{
+margin-top:18px;
+padding:11px;
+border-radius:10px;
+background:#0c1a2a;
+border:1px solid #253f59;
+color:#bcecff;
+font-size:12px
+}
+
+.start-btn{
+margin-top:18px;
+padding:12px 20px;
+border:0;
+border-radius:11px;
+background:linear-gradient(135deg,#0ea5e9,#2563eb);
+color:white;
+font-weight:800;
+box-shadow:0 8px 25px rgba(37,99,235,.25)
+}
+
+.start-btn:hover{
+filter:brightness(1.1)
+}
+
+.start-note{
+margin-top:13px;
+font-size:10px;
+color:#637991
+}
+
+.start-progress{
+display:none;
+margin-top:18px
+}
+
+.start-progress.active{
+display:block
+}
+
+.start-progress-track{
+height:8px;
+background:#0d1827;
+border-radius:999px;
+overflow:hidden
+}
+
+.start-progress-bar{
+height:100%;
+width:0;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+transition:width .2s
+}
+
+.start-progress-text{
+margin-top:7px;
+font-size:11px;
+color:#7890aa
+}
+
+/* =========================================================
+SCROLLBAR
+========================================================= */
+
 ::-webkit-scrollbar{
 width:7px;
 height:7px
 }
+
 ::-webkit-scrollbar-track{
 background:transparent
 }
+
 ::-webkit-scrollbar-thumb{
 background:#20344b;
 border-radius:20px
 }
+
 ::-webkit-scrollbar-thumb:hover{
 background:#2d4b68
 }
+
+/* =========================================================
+MOBILE
+========================================================= */
+
 @media(max-width:760px){
-html,body{overflow:hidden}
-.app{grid-template-columns:1fr}
-.sidebar{display:none}
-.header{height:56px;padding:0 11px}
-.header-sub{display:none}
-.chat{padding:18px 11px 145px}
-.welcome{padding-top:7vh}
-.welcome h1{font-size:26px}
-.suggestions{grid-template-columns:1fr;margin-top:22px}
+
+html,
+body{
+overflow:hidden
+}
+
+.app{
+grid-template-columns:1fr
+}
+
+.sidebar{
+display:none
+}
+
+.header{
+height:56px;
+padding:0 11px
+}
+
+.header-sub{
+display:none
+}
+
+.chat{
+padding:18px 11px 145px
+}
+
+.welcome{
+padding-top:7vh
+}
+
+.welcome h1{
+font-size:26px
+}
+
+.suggestions{
+grid-template-columns:1fr;
+margin-top:22px
+}
+
 .composer-area{
 left:0;
 padding:7px
 }
+
 .header-actions select{
 max-width:120px
 }
+
 .bubble{
 max-width:calc(100% - 44px)
 }
+
+.model-panel{
+left:10px;
+right:10px;
+top:65px;
+width:auto
+}
+
+.start-card{
+padding:25px 18px
+}
+
+.start-card h1{
+font-size:25px
+}
+
+}
+
+/* =========================================================
+REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+*{
+animation:none!important;
+transition:none!important
+}
+
 }
 </style>
 </head>
 
 <body>
 
+<!-- =========================================================
+START SCREEN
+========================================================= -->
+
+<div class="start-screen" id="startScreen">
+
+<div class="start-card">
+
+<div class="start-logo">
+FA
+</div>
+
+<h1>Fahrul AI</h1>
+
+<p>
+AI Assistant Pro lokal yang berjalan langsung di browser.
+Tidak menggunakan Ollama, OpenAI API, atau OpenRouter.
+Model AI dijalankan menggunakan WebGPU.
+</p>
+
+<div class="start-model">
+Model:
+<strong>Qwen2.5-Coder 3B</strong>
+<br>
+Dirancang khusus untuk membantu coding.
+</div>
+
+<button
+class="start-btn"
+id="startBtn">
+⚡ Aktifkan Fahrul AI
+</button>
+
+<div
+class="start-progress"
+id="startProgress">
+
+<div class="start-progress-track">
+<div
+class="start-progress-bar"
+id="startProgressBar">
+</div>
+</div>
+
+<div
+class="start-progress-text"
+id="startProgressText">
+Mempersiapkan model...
+</div>
+
+</div>
+
+<div class="start-note">
+Chrome/Edge terbaru dengan WebGPU direkomendasikan.
+Pertama kali membutuhkan download model.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+APP
+========================================================= -->
+
 <div class="app">
 
 <aside class="sidebar">
 
 <div class="brand">
-<div class="logo">AI</div>
+
+<div class="logo">
+FA
+</div>
+
 <div>
-<b>AI Assistant Pro</b>
-<span>Intelligent Workspace</span>
+
+<b>Fahrul AI</b>
+
+<span>
+Local AI • Coding Assistant
+</span>
+
 </div>
+
 </div>
 
-<button class="new-chat" id="newChat">＋ Chat Baru</button>
 
-<div class="side-title">Percakapan</div>
+<button
+class="new-chat"
+id="newChat">
+＋ Chat Baru
+</button>
 
-<div class="chat-list" id="chatList"></div>
+
+<div class="side-title">
+Percakapan
+</div>
+
+
+<div
+class="chat-list"
+id="chatList">
+</div>
+
 
 <div class="sidebar-bottom">
+
 <div class="status">
-<span class="online-dot"></span>
-<span id="serverStatus">Memeriksa server...</span>
+
+<span
+class="online-dot"
+id="statusDot">
+</span>
+
+<span
+id="serverStatus">
+Model belum dimuat
+</span>
+
 </div>
+
 </div>
 
 </aside>
+
 
 <main class="main">
 
 <header class="header">
 
 <div>
-<div class="header-title">AI Assistant Pro</div>
-<div class="header-sub">AI • Coding • Web Search • File Analysis</div>
+
+<div class="header-title">
+Fahrul AI
 </div>
+
+<div class="header-sub">
+Local AI • Coding • File Analysis • Private
+</div>
+
+</div>
+
 
 <div class="header-actions">
 
 <select id="mode">
-<option value="general">General</option>
-<option value="coding">Coding</option>
-<option value="study">Belajar</option>
-<option value="creative">Kreatif</option>
+
+<option value="general">
+General
+</option>
+
+<option value="coding">
+Coding
+</option>
+
+<option value="study">
+Belajar
+</option>
+
+<option value="creative">
+Kreatif
+</option>
+
 </select>
 
-<button class="icon-btn" id="clearChat" title="Hapus chat">🗑</button>
+
+<button
+class="icon-btn"
+id="modelBtn"
+title="Model">
+🧠
+</button>
+
+
+<button
+class="icon-btn"
+id="settingsBtn"
+title="Pengaturan">
+⚙
+</button>
+
+
+<button
+class="icon-btn"
+id="clearChat"
+title="Hapus chat">
+🗑
+</button>
 
 </div>
 
 </header>
 
-<section class="chat" id="chatBox">
 
-<div class="messages" id="messages">
+<section
+class="chat"
+id="chatBox">
 
-<div class="welcome">
+<div
+class="messages"
+id="messages">
 
-<div class="hero-icon">✦</div>
+<div
+class="welcome"
+id="welcome">
 
-<h1>Apa yang bisa saya bantu?</h1>
+<div class="hero-icon">
+✦
+</div>
+
+<h1>
+Apa yang bisa saya bantu?
+</h1>
 
 <p>
-Saya adalah AI Assistant Pro. Kamu bisa bertanya,
-membuat kode, memperbaiki bug, belajar, menulis,
-atau mencari informasi terbaru.
+Saya adalah Fahrul AI, AI lokal yang berjalan
+langsung di browser. Saya bisa membantu membuat,
+menganalisis, memperbaiki, dan menjelaskan kode.
 </p>
+
+
+<div
+class="local-badge"
+id="localBadge">
+
+<span></span>
+
+Model lokal belum aktif
+
+</div>
+
 
 <div class="suggestions">
 
@@ -596,7 +1353,7 @@ Bantu debug kode saya
 </button>
 
 <button class="suggestion">
-Cari informasi terbaru tentang teknologi AI
+Buat game sederhana dengan HTML CSS JavaScript
 </button>
 
 </div>
@@ -607,39 +1364,67 @@ Cari informasi terbaru tentang teknologi AI
 
 </section>
 
+
 <div class="composer-area">
 
 <div class="composer">
 
-<div class="file-chip" id="fileChip"></div>
+
+<div
+class="file-chip"
+id="fileChip">
+</div>
+
 
 <div class="tools">
 
+
 <label class="tool file-label">
+
 📎 Lampirkan
+
 <input
 id="fileInput"
 type="file"
-accept=".txt,.md,.json,.js,.ts,.html,.css,.py,.java,.cpp,.c,.gd,.xml,.csv">
+accept=".txt,.md,.json,.js,.ts,.html,.css,.py,.java,.cpp,.c,.gd,.gdscript,.xml,.csv,.sql,.php,.cs,.rs,.go,.jsx,.tsx">
+
 </label>
 
-<button class="tool" id="webBtn">
+
+<button
+class="tool"
+id="webBtn"
+title="Mode web search memerlukan backend online">
 🌐 Web Search: OFF
 </button>
 
-<button class="stop" id="stopBtn">
+
+<button
+class="tool"
+id="modelToolBtn">
+🧠 Model
+</button>
+
+
+<button
+class="stop"
+id="stopBtn">
 ■ Hentikan
 </button>
 
 </div>
 
+
 <textarea
 id="userInput"
 placeholder="Tulis pesan... Enter untuk mengirim, Shift+Enter untuk baris baru"></textarea>
 
+
 <div class="send-row">
 
-<button class="send" id="sendBtn">
+<button
+class="send"
+id="sendBtn">
 ➤
 </button>
 
@@ -653,1298 +1438,2469 @@ placeholder="Tulis pesan... Enter untuk mengirim, Shift+Enter untuk baris baru">
 
 </div>
 
-<script>
 
-/* ============================================================
-   AI ASSISTANT PRO
-   Frontend Single HTML
-   Backend default: http://localhost:3000
-   ============================================================ */
+<!-- =========================================================
+MODEL PANEL
+========================================================= -->
 
-/*
-   PENTING:
+<div
+class="model-panel"
+id="modelPanel">
 
-   Jangan menaruh OpenAI API key di file HTML.
+<div class="model-panel-head">
 
-   HTML ini mengirim permintaan ke:
+<strong>
+Fahrul AI Model
+</strong>
 
-   http://localhost:3000/api/chat
-   atau
-   http://localhost:3000/api/chat/stream
+<button
+class="close-panel"
+id="closeModelPanel">
+×
+</button>
 
-   Server Express yang memegang API key.
-*/
+</div>
 
-const API_BASE = "";
 
-const chatBox = document.getElementById("chatBox");
-const messagesEl = document.getElementById("messages");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const newChatBtn = document.getElementById("newChat");
-const clearChatBtn = document.getElementById("clearChat");
-const modeEl = document.getElementById("mode");
-const webBtn = document.getElementById("webBtn");
-const stopBtn = document.getElementById("stopBtn");
-const fileInput = document.getElementById("fileInput");
-const fileChip = document.getElementById("fileChip");
-const chatList = document.getElementById("chatList");
-const serverStatus = document.getElementById("serverStatus");
+<div class="model-content">
 
-let webSearch = false;
-let attachedFile = null;
-let controller = null;
+<label>
+Model aktif
+</label>
+
+<select
+class="model-select"
+id="modelSelect">
+
+<option value="Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC">
+Qwen2.5-Coder 3B — Coding
+</option>
+
+<option value="Qwen2.5-Coder-1.5B-Instruct-q4f16_1-MLC">
+Qwen2.5-Coder 1.5B — Ringan
+</option>
+
+<option value="Qwen2.5-Coder-0.5B-Instruct-q4f16_1-MLC">
+Qwen2.5-Coder 0.5B — Sangat Ringan
+</option>
+
+</select>
+
+
+<div class="key-box">
+🔑 Fahrul AI
+</div>
+
+
+<div class="model-info">
+
+Ini bukan API key provider.
+<strong>Fahrul AI</strong> adalah identitas
+AI lokal kamu. Model berjalan di perangkatmu.
+
+</div>
+
+
+<button
+class="load-model"
+id="loadModelBtn">
+Muat / Ganti Model
+</button>
+
+
+<div
+class="progress-box"
+id="modelProgress">
+
+<div class="progress-track">
+
+<div
+class="progress-bar"
+id="modelProgressBar">
+</div>
+
+</div>
+
+<div
+class="progress-text"
+id="modelProgressText">
+Menyiapkan model...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+SETTINGS
+========================================================= -->
+
+<div
+class="modal"
+id="settingsModal">
+
+<div class="modal-card">
+
+<div class="modal-head">
+
+<strong>
+Pengaturan Fahrul AI
+</strong>
+
+<button
+class="modal-close"
+id="closeSettings">
+×
+</button>
+
+</div>
+
+
+<div class="modal-body">
+
+<div class="setting-row">
+
+<div class="setting-label">
+Nama AI
+</div>
+
+<div class="setting-value">
+Fahrul AI
+</div>
+
+</div>
+
+
+<div class="setting-row">
+
+<div class="setting-label">
+API Key
+</div>
+
+<div class="setting-value">
+Fahrul AI
+</div>
+
+</div>
+
+
+<div class="setting-row">
+
+<div class="setting-label">
+Engine
+</div>
+
+<div class="setting-value">
+WebLLM + WebGPU
+</div>
+
+</div>
+
+
+<div class="setting-row">
+
+<div class="setting-label">
+Model
+</div>
+
+<div
+class="setting-value"
+id="settingsModel">
+Qwen2.5-Coder 3B
+</div>
+
+</div>
+
+
+<div class="setting-row">
+
+<div class="setting-label">
+Penyimpanan
+</div>
+
+<div class="setting-value">
+Chat disimpan di localStorage.
+Model disimpan di cache browser.
+</div>
+
+</div>
+
+
+<div class="setting-row">
+
+<div class="setting-label">
+Reset percakapan
+</div>
+
+<button
+class="danger-btn"
+id="resetStorage">
+Hapus seluruh riwayat chat
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+/* =========================================================
+FAHRUL AI
+Local Browser AI
+Powered by WebLLM
+========================================================= */
+
+import {
+CreateMLCEngine
+} from "https://esm.run/@mlc-ai/web-llm";
+
+
+/* =========================================================
+CONFIG
+========================================================= */
+
+const FAHRUL_AI_KEY = "Fahrul AI";
+
+const DEFAULT_MODEL =
+"Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC";
+
+const STORAGE_KEY =
+"fahrul_ai_chats_v1";
+
+const ACTIVE_KEY =
+"fahrul_ai_active_v1";
+
+const MODEL_KEY =
+"fahrul_ai_model_v1";
+
+
+/* =========================================================
+ELEMENTS
+========================================================= */
+
+const startScreen =
+document.getElementById("startScreen");
+
+const startBtn =
+document.getElementById("startBtn");
+
+const startProgress =
+document.getElementById("startProgress");
+
+const startProgressBar =
+document.getElementById("startProgressBar");
+
+const startProgressText =
+document.getElementById("startProgressText");
+
+const chatBox =
+document.getElementById("chatBox");
+
+const messagesEl =
+document.getElementById("messages");
+
+const welcome =
+document.getElementById("welcome");
+
+const input =
+document.getElementById("userInput");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+const newChatBtn =
+document.getElementById("newChat");
+
+const clearChatBtn =
+document.getElementById("clearChat");
+
+const modeEl =
+document.getElementById("mode");
+
+const webBtn =
+document.getElementById("webBtn");
+
+const stopBtn =
+document.getElementById("stopBtn");
+
+const fileInput =
+document.getElementById("fileInput");
+
+const fileChip =
+document.getElementById("fileChip");
+
+const chatList =
+document.getElementById("chatList");
+
+const serverStatus =
+document.getElementById("serverStatus");
+
+const statusDot =
+document.getElementById("statusDot");
+
+const localBadge =
+document.getElementById("localBadge");
+
+const modelBtn =
+document.getElementById("modelBtn");
+
+const modelToolBtn =
+document.getElementById("modelToolBtn");
+
+const modelPanel =
+document.getElementById("modelPanel");
+
+const closeModelPanel =
+document.getElementById("closeModelPanel");
+
+const modelSelect =
+document.getElementById("modelSelect");
+
+const loadModelBtn =
+document.getElementById("loadModelBtn");
+
+const modelProgress =
+document.getElementById("modelProgress");
+
+const modelProgressBar =
+document.getElementById("modelProgressBar");
+
+const modelProgressText =
+document.getElementById("modelProgressText");
+
+const settingsBtn =
+document.getElementById("settingsBtn");
+
+const settingsModal =
+document.getElementById("settingsModal");
+
+const closeSettings =
+document.getElementById("closeSettings");
+
+const settingsModel =
+document.getElementById("settingsModel");
+
+const resetStorage =
+document.getElementById("resetStorage");
+
+
+/* =========================================================
+STATE
+========================================================= */
+
+let engine = null;
+
+let currentModel =
+localStorage.getItem(MODEL_KEY)
+|| DEFAULT_MODEL;
 
 let chats = [];
 
-try {
-  chats = JSON.parse(
-    localStorage.getItem("ai_assistant_pro_chats") || "[]"
-  );
-} catch {
-  chats = [];
+let activeChatId =
+localStorage.getItem(ACTIVE_KEY)
+|| null;
+
+let attachedFile = null;
+
+let controller = null;
+
+let isGenerating = false;
+
+let webSearch = false;
+
+
+/* =========================================================
+LOAD STORAGE
+========================================================= */
+
+try{
+
+chats =
+JSON.parse(
+localStorage.getItem(STORAGE_KEY)
+|| "[]"
+);
+
+}catch{
+
+chats = [];
+
 }
 
-let activeChatId =
-  localStorage.getItem("ai_assistant_pro_active") || null;
 
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
+/* =========================================================
+HELPERS
+========================================================= */
 
 function createId(){
 
-  return (
-    Date.now().toString(36) +
-    Math.random().toString(36).substring(2,9)
-  );
+return (
+Date.now().toString(36)
++
+Math.random()
+.toString(36)
+.substring(2,9)
+);
 
 }
 
 
 function saveState(){
 
-  localStorage.setItem(
-    "ai_assistant_pro_chats",
-    JSON.stringify(chats)
-  );
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(chats)
+);
 
-  if(activeChatId){
+if(activeChatId){
 
-    localStorage.setItem(
-      "ai_assistant_pro_active",
-      activeChatId
-    );
+localStorage.setItem(
+ACTIVE_KEY,
+activeChatId
+);
 
-  }
+}
 
-  renderChatList();
+renderChatList();
 
 }
 
 
 function getActiveChat(){
 
-  return chats.find(
-    chat => chat.id === activeChatId
-  );
+return chats.find(
+chat => chat.id === activeChatId
+);
 
 }
 
 
 function escapeHTML(value){
 
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+return String(value)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
 
 }
 
 
-/* ============================================================
-   MARKDOWN
-   ============================================================ */
+/* =========================================================
+MARKDOWN RENDERER
+========================================================= */
 
 function renderInlineMarkdown(text){
 
-  return text
+return text
 
-    .replace(
-      /`([^`\n]+)`/g,
-      '<span class="inline-code">$1</span>'
-    )
+.replace(
+/`([^`\n]+)`/g,
+'<span class="inline-code">$1</span>'
+)
 
-    .replace(
-      /\*\*(.+?)\*\*/g,
-      "<strong>$1</strong>"
-    )
+.replace(
+/\*\*(.+?)\*\*/g,
+"<strong>$1</strong>"
+)
 
-    .replace(
-      /\*(.+?)\*/g,
-      "<em>$1</em>"
-    )
+.replace(
+/\*(.+?)\*/g,
+"<em>$1</em>"
+)
 
-    .replace(
-      /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener">$1</a>'
-    );
+.replace(
+/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+'<a href="$2" target="_blank" rel="noopener">$1</a>'
+);
 
 }
 
 
 function renderMarkdown(text){
 
-  if(!text){
-    return "";
-  }
+if(!text){
+return "";
+}
 
-  let source = escapeHTML(text);
+let source =
+escapeHTML(text);
 
-  const codeBlocks = [];
+const codeBlocks = [];
 
-  source = source.replace(
-    /```([a-zA-Z0-9_+#.-]*)\n?([\s\S]*?)```/g,
-    function(_,language,code){
 
-      const index = codeBlocks.length;
+source =
+source.replace(
+/```([a-zA-Z0-9_+#.-]*)\n?([\s\S]*?)```/g,
+function(_,language,code){
 
-      codeBlocks.push({
-        language: language || "code",
-        code: code
-          .replace(/^\n/,"")
-          .replace(/\n$/,"")
-      });
+const index =
+codeBlocks.length;
 
-      return `___CODE_BLOCK_${index}___`;
+codeBlocks.push({
 
-    }
-  );
+language:
+language || "code",
 
-  const lines = source.split("\n");
+code:
+code
+.replace(/^\n/,"")
+.replace(/\n$/,"")
 
-  const output = [];
+});
 
-  let listOpen = false;
+return `___CODE_BLOCK_${index}___`;
 
-  for(const line of lines){
+}
+);
 
-    if(/^#{1,3}\s/.test(line)){
 
-      if(listOpen){
+const lines =
+source.split("\n");
 
-        output.push("</ul>");
-        listOpen = false;
+const output = [];
 
-      }
+let listType = null;
 
-      const match = line.match(
-        /^(#{1,3})\s(.+)$/
-      );
 
-      const level = match[1].length;
+for(
+const line
+of lines
+){
 
-      output.push(
-        `<h${level}>${renderInlineMarkdown(match[2])}</h${level}>`
-      );
+if(
+/^#{1,3}\s/.test(line)
+){
 
-      continue;
+if(listType){
+output.push(
+listType === "ol"
+? "</ol>"
+: "</ul>"
+);
+listType = null;
+}
 
-    }
+const match =
+line.match(
+/^(#{1,3})\s(.+)$/
+);
 
+const level =
+match[1].length;
 
-    if(/^[-*]\s/.test(line)){
+output.push(
+`<h${level}>${
+renderInlineMarkdown(
+match[2]
+)
+}</h${level}>`
+);
 
-      if(!listOpen){
+continue;
+}
 
-        output.push("<ul>");
-        listOpen = true;
 
-      }
+if(
+/^[-*]\s/.test(line)
+){
 
-      output.push(
-        `<li>${renderInlineMarkdown(
-          line.substring(2)
-        )}</li>`
-      );
+if(listType !== "ul"){
 
-      continue;
+if(listType){
+output.push(
+listType === "ol"
+? "</ol>"
+: "</ul>"
+);
+}
 
-    }
+output.push("<ul>");
+listType = "ul";
 
+}
 
-    if(/^\d+\.\s/.test(line)){
+output.push(
+`<li>${
+renderInlineMarkdown(
+line.substring(2)
+)
+}</li>`
+);
 
-      if(listOpen){
+continue;
+}
 
-        output.push("</ul>");
-        listOpen = false;
 
-      }
+if(
+/^\d+\.\s/.test(line)
+){
 
-      output.push(
-        `<p>${renderInlineMarkdown(line)}</p>`
-      );
+if(listType !== "ol"){
 
-      continue;
+if(listType){
+output.push(
+listType === "ol"
+? "</ol>"
+: "</ul>"
+);
+}
 
-    }
+output.push("<ol>");
+listType = "ol";
 
+}
 
-    if(listOpen){
+output.push(
+`<li>${
+renderInlineMarkdown(
+line.replace(
+/^\d+\.\s/,
+""
+)
+)
+}</li>`
+);
 
-      output.push("</ul>");
-      listOpen = false;
+continue;
+}
 
-    }
 
+if(listType){
 
-    if(line.trim()===""){
+output.push(
+listType === "ol"
+? "</ol>"
+: "</ul>"
+);
 
-      output.push("<br>");
-
-    }else{
-
-      output.push(
-        `<p>${renderInlineMarkdown(line)}</p>`
-      );
-
-    }
-
-  }
-
-  if(listOpen){
-
-    output.push("</ul>");
-
-  }
-
-
-  let result = output.join("");
-
-  codeBlocks.forEach(
-    function(block,index){
-
-      const safeCode = block.code;
-
-      const encodedCode =
-        encodeURIComponent(block.code);
-
-      const html = `
-        <div class="code-wrap">
-
-          <div class="code-head">
-
-            <span>${escapeHTML(
-              block.language
-            )}</span>
-
-            <button
-              class="copy-btn"
-              data-code="${encodedCode}">
-              Salin
-            </button>
-
-          </div>
-
-          <pre><code>${safeCode}</code></pre>
-
-        </div>
-      `;
-
-      result = result.replace(
-        `___CODE_BLOCK_${index}___`,
-        html
-      );
-
-    }
-  );
-
-  return result;
+listType = null;
 
 }
 
 
-/* ============================================================
-   CHAT LIST
-   ============================================================ */
+if(
+line.trim() === ""
+){
+
+output.push("<br>");
+
+}else{
+
+output.push(
+`<p>${
+renderInlineMarkdown(line)
+}</p>`
+);
+
+}
+
+}
+
+
+if(listType){
+
+output.push(
+listType === "ol"
+? "</ol>"
+: "</ul>"
+);
+
+}
+
+
+let result =
+output.join("");
+
+
+codeBlocks.forEach(
+(block,index)=>{
+
+const encoded =
+encodeURIComponent(
+block.code
+);
+
+const html = `
+
+<div class="code-wrap">
+
+<div class="code-head">
+
+<span>
+${escapeHTML(block.language)}
+</span>
+
+<button
+class="copy-btn"
+data-code="${encoded}">
+Salin
+</button>
+
+</div>
+
+<pre><code>${block.code}</code></pre>
+
+</div>
+
+`;
+
+result =
+result.replace(
+`___CODE_BLOCK_${index}___`,
+html
+);
+
+}
+);
+
+
+return result;
+
+}
+
+
+/* =========================================================
+CHAT LIST
+========================================================= */
 
 function renderChatList(){
 
-  if(!chats.length){
+if(!chats.length){
 
-    chatList.innerHTML =
-      '<div class="empty">Belum ada percakapan</div>';
+chatList.innerHTML =
+'<div class="empty">Belum ada percakapan</div>';
 
-    return;
-
-  }
-
-  chatList.innerHTML =
-    chats
-      .slice()
-      .reverse()
-      .map(function(chat){
-
-        return `
-          <button
-            class="chat-item ${
-              chat.id === activeChatId
-                ? "active"
-                : ""
-            }"
-            data-chat-id="${chat.id}">
-            ${escapeHTML(
-              chat.title || "Chat baru"
-            )}
-          </button>
-        `;
-
-      })
-      .join("");
+return;
 
 }
 
 
-/* ============================================================
-   MESSAGE UI
-   ============================================================ */
+chatList.innerHTML =
+chats
+.slice()
+.reverse()
+.map(chat=>`
 
-function showWelcome(){
+<button
+class="chat-item ${
+chat.id === activeChatId
+? "active"
+: ""
+}"
+data-chat-id="${chat.id}">
 
-  messagesEl.innerHTML = `
+${escapeHTML(
+chat.title || "Percakapan baru"
+)}
 
-    <div class="welcome">
+</button>
 
-      <div class="hero-icon">✦</div>
+`)
+.join("");
 
-      <h1>Apa yang bisa saya bantu?</h1>
 
-      <p>
-        Saya adalah AI Assistant Pro.
-        Tanya apa saja, buat kode, debug,
-        belajar, menulis, atau cari informasi terbaru.
-      </p>
+document
+.querySelectorAll(
+".chat-item"
+)
+.forEach(button=>{
 
-      <div class="suggestions">
+button.addEventListener(
+"click",
+()=>{
 
-        <button class="suggestion">
-          Buatkan landing page HTML modern
-        </button>
+activeChatId =
+button.dataset.chatId;
 
-        <button class="suggestion">
-          Jelaskan JavaScript async/await dengan contoh
-        </button>
+saveState();
 
-        <button class="suggestion">
-          Bantu debug kode saya
-        </button>
+renderMessages();
 
-        <button class="suggestion">
-          Cari informasi terbaru tentang teknologi AI
-        </button>
+}
+);
 
-      </div>
-
-    </div>
-
-  `;
+});
 
 }
 
 
-function addMessage(role,text,scroll=true){
+/* =========================================================
+NEW CHAT
+========================================================= */
 
-  const row = document.createElement("div");
+function createNewChat(){
 
-  row.className =
-    `message ${role}`;
+const chat = {
 
-  const avatar =
-    role === "user"
-      ? "U"
-      : "✦";
+id:createId(),
 
-  row.innerHTML = `
+title:"Percakapan baru",
 
-    <div class="avatar">
-      ${avatar}
-    </div>
+messages:[],
 
-    <div class="bubble">
+createdAt:
+Date.now()
 
-      ${
-        role === "assistant"
-          ? renderMarkdown(text)
-          : escapeHTML(text).replace(
-              /\n/g,
-              "<br>"
-            )
-      }
+};
 
-      <div class="meta">
-        ${
-          role === "user"
-            ? "Anda"
-            : "AI Assistant Pro"
-        }
-      </div>
 
-    </div>
+chats.push(chat);
 
-  `;
+activeChatId =
+chat.id;
 
-  messagesEl.appendChild(row);
+saveState();
 
-  if(scroll){
+renderMessages();
 
-    scrollToBottom();
-
-  }
-
-  return row.querySelector(".bubble");
+input.focus();
 
 }
 
+
+function ensureChat(){
+
+if(activeChatId){
+
+const existing =
+getActiveChat();
+
+if(existing){
+return existing;
+}
+
+}
+
+createNewChat();
+
+return getActiveChat();
+
+}
+
+
+/* =========================================================
+RENDER MESSAGES
+========================================================= */
 
 function renderMessages(){
 
-  const chat = getActiveChat();
+const chat =
+getActiveChat();
 
-  messagesEl.innerHTML = "";
 
-  if(!chat || !chat.messages.length){
+if(
+!chat ||
+!chat.messages.length
+){
 
-    showWelcome();
+messagesEl.innerHTML = `
+<div
+class="welcome"
+id="welcome">
 
-    return;
+<div class="hero-icon">
+✦
+</div>
 
-  }
+<h1>
+Apa yang bisa saya bantu?
+</h1>
 
-  chat.messages.forEach(function(message){
+<p>
+Saya adalah Fahrul AI, AI lokal yang berjalan
+langsung di browser. Saya bisa membantu membuat,
+menganalisis, memperbaiki, dan menjelaskan kode.
+</p>
 
-    addMessage(
-      message.role,
-      message.content,
-      false
-    );
+<div
+class="local-badge ${
+engine ? "ready" : ""
+}"
+id="localBadge">
 
-  });
+<span></span>
 
-  scrollToBottom();
+${
+engine
+? "Model lokal aktif"
+: "Model lokal belum aktif"
+}
+
+</div>
+
+<div class="suggestions">
+
+<button class="suggestion">
+Buatkan landing page HTML modern
+</button>
+
+<button class="suggestion">
+Jelaskan JavaScript async/await dengan contoh
+</button>
+
+<button class="suggestion">
+Bantu debug kode saya
+</button>
+
+<button class="suggestion">
+Buat game sederhana dengan HTML CSS JavaScript
+</button>
+
+</div>
+
+</div>
+`;
+
+bindSuggestions();
+
+return;
 
 }
 
+
+messagesEl.innerHTML = "";
+
+for(
+const message
+of chat.messages
+){
+
+addMessageToDOM(
+message.role,
+message.content,
+false
+);
+
+}
+
+scrollToBottom();
+
+}
+
+
+/* =========================================================
+ADD MESSAGE
+========================================================= */
+
+function addMessageToDOM(
+role,
+content,
+scroll=true
+){
+
+const wrapper =
+document.createElement("div");
+
+wrapper.className =
+`message ${role}`;
+
+
+const avatar =
+document.createElement("div");
+
+avatar.className =
+"avatar";
+
+avatar.textContent =
+role === "user"
+? "U"
+: "FA";
+
+
+const bubble =
+document.createElement("div");
+
+bubble.className =
+"bubble";
+
+
+if(role === "user"){
+
+bubble.innerHTML =
+escapeHTML(content)
+.replace(
+/\n/g,
+"<br>"
+);
+
+}else{
+
+bubble.innerHTML =
+renderMarkdown(content);
+
+}
+
+
+wrapper.appendChild(
+avatar
+);
+
+wrapper.appendChild(
+bubble
+);
+
+messagesEl.appendChild(
+wrapper
+);
+
+
+if(scroll){
+
+scrollToBottom();
+
+}
+
+
+return bubble;
+
+}
+
+
+/* =========================================================
+SCROLL
+========================================================= */
 
 function scrollToBottom(){
 
-  chatBox.scrollTop =
-    chatBox.scrollHeight;
+requestAnimationFrame(
+()=>{
+
+chatBox.scrollTop =
+chatBox.scrollHeight;
+
+}
+);
 
 }
 
 
-/* ============================================================
-   CHAT MANAGEMENT
-   ============================================================ */
+/* =========================================================
+SUGGESTIONS
+========================================================= */
 
-function createChat(firstMessage="Chat baru"){
+function bindSuggestions(){
 
-  activeChatId = createId();
+document
+.querySelectorAll(
+".suggestion"
+)
+.forEach(button=>{
 
-  chats.push({
+button.addEventListener(
+"click",
+()=>{
 
-    id: activeChatId,
+input.value =
+button.textContent.trim();
 
-    title:
-      firstMessage
-        .substring(0,42)
-        .trim() || "Chat baru",
+autoResize();
 
-    messages: [],
+input.focus();
 
-    createdAt: Date.now()
+}
+);
 
-  });
-
-  saveState();
-
-  return getActiveChat();
+});
 
 }
 
 
-function ensureChat(message){
+/* =========================================================
+MODEL STATUS
+========================================================= */
 
-  let chat = getActiveChat();
+function setStatus(
+text,
+state="loading"
+){
 
-  if(!chat){
+serverStatus.textContent =
+text;
 
-    chat = createChat(message);
+statusDot.classList.remove(
+"ready",
+"error"
+);
 
-  }
+if(state === "ready"){
 
-  return chat;
+statusDot.classList.add(
+"ready"
+);
+
+}else if(state === "error"){
+
+statusDot.classList.add(
+"error"
+);
+
+}
 
 }
 
 
-function newChat(){
+/* =========================================================
+MODEL LOADING
+========================================================= */
 
-  activeChatId = null;
+async function loadModel(
+modelId=currentModel
+){
 
-  attachedFile = null;
+if(
+isGenerating
+){
 
-  fileInput.value = "";
-
-  fileChip.style.display = "none";
-
-  input.value = "";
-
-  saveState();
-
-  renderMessages();
-
-  input.focus();
+return;
 
 }
 
 
-function deleteCurrentChat(){
+try{
 
-  if(!activeChatId){
+setStatus(
+"Menyiapkan model..."
+);
 
-    return;
+startProgress.classList.add(
+"active"
+);
 
-  }
+modelProgress.classList.add(
+"active"
+);
 
-  const chat = getActiveChat();
+startProgressBar.style.width =
+"1%";
 
-  if(!chat){
-
-    return;
-
-  }
-
-  const okay =
-    confirm(
-      "Hapus percakapan ini?"
-    );
-
-  if(!okay){
-
-    return;
-
-  }
-
-  chats =
-    chats.filter(
-      c => c.id !== activeChatId
-    );
-
-  activeChatId = null;
-
-  saveState();
-
-  renderMessages();
-
-}
+modelProgressBar.style.width =
+"1%";
 
 
-/* ============================================================
-   SERVER STATUS
-   ============================================================ */
+startProgressText.textContent =
+"Memulai WebGPU...";
 
-async function checkServer(){
+modelProgressText.textContent =
+"Memulai WebGPU...";
 
-  try{
 
-    const response =
-      await fetch(
-        `${API_BASE}/api/health`
-      );
+if(engine){
 
-    const data =
-      await response.json();
+try{
 
-    if(data.configured){
+await engine.unload();
 
-      serverStatus.textContent =
-        `Online • ${data.model || "AI"}`;
+}catch{}
 
-    }else{
-
-      serverStatus.textContent =
-        "Server online • API key belum diatur";
-
-    }
-
-  }catch(error){
-
-    serverStatus.textContent =
-      "Backend offline";
-
-  }
+engine = null;
 
 }
 
 
-/* ============================================================
-   SEND MESSAGE
-   ============================================================ */
+const progressCallback =
+(report)=>{
+
+const raw =
+Number(
+report.progress
+);
+
+const progress =
+Math.max(
+0,
+Math.min(
+100,
+Math.round(
+raw * 100
+)
+)
+);
+
+const text =
+report.text ||
+`Memuat model... ${progress}%`;
+
+
+startProgressBar.style.width =
+progress + "%";
+
+modelProgressBar.style.width =
+progress + "%";
+
+startProgressText.textContent =
+text;
+
+modelProgressText.textContent =
+text;
+
+};
+
+
+engine =
+await CreateMLCEngine(
+modelId,
+{
+
+initProgressCallback:
+progressCallback
+
+}
+);
+
+
+currentModel =
+modelId;
+
+localStorage.setItem(
+MODEL_KEY,
+currentModel
+);
+
+
+settingsModel.textContent =
+getFriendlyModelName(
+currentModel
+);
+
+
+setStatus(
+"Fahrul AI • Model siap",
+"ready"
+);
+
+
+localBadge?.classList.add(
+"ready"
+);
+
+
+if(localBadge){
+
+localBadge.innerHTML =
+"<span></span> Model lokal aktif";
+
+}
+
+
+startProgressBar.style.width =
+"100%";
+
+modelProgressBar.style.width =
+"100%";
+
+startProgressText.textContent =
+"Model siap digunakan.";
+
+modelProgressText.textContent =
+"Model siap digunakan.";
+
+
+setTimeout(
+()=>{
+
+startScreen.style.display =
+"none";
+
+startProgress.classList.remove(
+"active"
+);
+
+},
+500
+);
+
+
+}catch(error){
+
+console.error(error);
+
+engine = null;
+
+setStatus(
+"Model gagal dimuat",
+"error"
+);
+
+
+startProgressText.textContent =
+"Model gagal dimuat: " +
+(error.message || error);
+
+modelProgressText.textContent =
+"Model gagal dimuat.";
+
+
+alert(
+"Fahrul AI gagal memuat model.\n\n" +
+(error.message || error) +
+"\n\nPastikan browser mendukung WebGPU dan koneksi internet tersedia untuk download model."
+);
+
+}
+
+}
+
+
+/* =========================================================
+FRIENDLY MODEL NAME
+========================================================= */
+
+function getFriendlyModelName(
+model
+){
+
+if(
+model.includes("7B")
+){
+
+return "Qwen2.5-Coder 7B";
+
+}
+
+if(
+model.includes("3B")
+){
+
+return "Qwen2.5-Coder 3B";
+
+}
+
+if(
+model.includes("1.5B")
+){
+
+return "Qwen2.5-Coder 1.5B";
+
+}
+
+if(
+model.includes("0.5B")
+){
+
+return "Qwen2.5-Coder 0.5B";
+
+}
+
+return model;
+
+}
+
+
+/* =========================================================
+SYSTEM PROMPT
+========================================================= */
+
+function getSystemPrompt(){
+
+const mode =
+modeEl.value;
+
+
+const common = `
+
+Kamu adalah Fahrul AI.
+
+Nama kamu adalah Fahrul AI.
+Kamu adalah asisten AI lokal milik pengguna.
+
+API identity:
+Fahrul AI
+
+Kamu berjalan secara lokal di browser menggunakan
+WebGPU. Jangan mengaku sebagai OpenAI, ChatGPT,
+Gemini, Claude, atau Ollama.
+
+Jawablah dalam bahasa yang digunakan pengguna.
+Jika pengguna menggunakan bahasa Indonesia,
+gunakan bahasa Indonesia.
+
+Jangan mengarang fakta.
+Jika tidak yakin, katakan bahwa kamu tidak yakin.
+
+Jika diminta membuat kode:
+- berikan kode lengkap bila memungkinkan
+- jangan memotong kode dengan "...", "dan seterusnya",
+  atau komentar yang sengaja menghilangkan bagian
+- pertahankan fitur yang diminta pengguna
+- periksa sintaks
+- perhatikan bug
+- gunakan markdown code fence
+- sebutkan nama file bila relevan
+
+Jika pengguna meminta memperbaiki kode:
+- jangan menghapus fitur yang sudah ada tanpa alasan
+- pertahankan struktur UI bila tidak diminta diubah
+- berikan versi lengkap jika pengguna meminta kode full
+
+`;
+
+
+if(mode === "coding"){
+
+return common + `
+
+MODE CODING AKTIF.
+
+Kamu adalah software engineer senior.
+Fokus pada:
+HTML
+CSS
+JavaScript
+TypeScript
+Node.js
+Python
+C
+C++
+C#
+Java
+PHP
+SQL
+GDScript
+Godot
+React
+dan teknologi web lainnya.
+
+Saat debugging:
+1. cari penyebab
+2. jelaskan masalah
+3. berikan solusi
+4. berikan kode perbaikan lengkap bila diminta
+5. cek kemungkinan bug lanjutan
+
+`;
+
+}
+
+
+if(mode === "study"){
+
+return common + `
+
+MODE BELAJAR AKTIF.
+
+Jelaskan konsep secara bertahap,
+gunakan contoh sederhana,
+dan jangan terlalu banyak jargon.
+
+`;
+
+}
+
+
+if(mode === "creative"){
+
+return common + `
+
+MODE KREATIF AKTIF.
+
+Bantu membuat ide, desain, UI,
+copywriting, game concept,
+dan konten kreatif.
+
+`;
+
+}
+
+
+return common + `
+
+MODE GENERAL AKTIF.
+
+Jawab secara natural, jelas,
+dan membantu.
+
+`;
+
+}
+
+
+/* =========================================================
+FILE ATTACHMENT
+========================================================= */
+
+fileInput.addEventListener(
+"change",
+async()=>{
+
+const file =
+fileInput.files?.[0];
+
+if(!file){
+
+attachedFile = null;
+
+fileChip.style.display =
+"none";
+
+return;
+
+}
+
+
+try{
+
+const text =
+await file.text();
+
+
+attachedFile = {
+
+name:file.name,
+
+type:file.type,
+
+size:file.size,
+
+content:
+text.substring(
+0,
+30000
+)
+
+};
+
+
+fileChip.style.display =
+"flex";
+
+
+fileChip.innerHTML = `
+
+<span>
+📄 ${escapeHTML(file.name)}
+</span>
+
+<button
+class="remove-file"
+id="removeFile">
+×
+</button>
+
+`;
+
+
+document
+.getElementById(
+"removeFile"
+)
+.addEventListener(
+"click",
+removeAttachment
+);
+
+}catch(error){
+
+alert(
+"Gagal membaca file."
+);
+
+}
+
+});
+
+
+function removeAttachment(){
+
+attachedFile = null;
+
+fileInput.value = "";
+
+fileChip.style.display =
+"none";
+
+fileChip.innerHTML = "";
+
+}
+
+
+/* =========================================================
+WEB SEARCH BUTTON
+========================================================= */
+
+webBtn.addEventListener(
+"click",
+()=>{
+
+webSearch =
+!webSearch;
+
+webBtn.classList.toggle(
+"active",
+webSearch
+);
+
+webBtn.textContent =
+webSearch
+? "🌐 Web Search: ON"
+: "🌐 Web Search: OFF";
+
+if(webSearch){
+
+alert(
+"Web Search membutuhkan backend/web search eksternal. Mode ini tidak digunakan oleh model lokal Fahrul AI."
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+BUILD USER PROMPT
+========================================================= */
+
+function buildUserPrompt(
+message
+){
+
+let prompt =
+message;
+
+
+if(attachedFile){
+
+prompt += `
+
+===== FILE TERLAMPIR =====
+
+Nama file:
+${attachedFile.name}
+
+Isi file:
+
+${attachedFile.content}
+
+===== AKHIR FILE =====
+
+`;
+
+}
+
+
+if(modeEl.value === "coding"){
+
+prompt += `
+
+Tolong prioritaskan ketepatan kode.
+Jika membuat kode, gunakan code fence markdown
+dan jangan memotong kode.
+
+`;
+
+}
+
+
+return prompt;
+
+}
+
+
+/* =========================================================
+SEND MESSAGE
+========================================================= */
 
 async function sendMessage(){
 
-  const message =
-    input.value.trim();
+if(isGenerating){
 
-  if(!message){
-
-    return;
-
-  }
-
-  if(controller){
-
-    return;
-
-  }
-
-  const chat =
-    ensureChat(message);
-
-  if(!chat.messages.length){
-
-    chat.title =
-      message.substring(0,42);
-
-  }
-
-  chat.messages.push({
-
-    role:"user",
-
-    content:message
-
-  });
-
-  addMessage(
-    "user",
-    message
-  );
-
-  input.value = "";
-
-  input.style.height = "55px";
-
-  const assistantBubble =
-    addMessage(
-      "assistant",
-      `<span class="typing">
-        <i></i><i></i><i></i>
-      </span>`
-    );
-
-  chat.messages.push({
-
-    role:"assistant",
-
-    content:""
-
-  });
-
-  const assistantIndex =
-    chat.messages.length - 1;
-
-  sendBtn.disabled = true;
-
-  stopBtn.style.display =
-    "inline-block";
-
-  controller =
-    new AbortController();
-
-  try{
-
-    const response =
-      await fetch(
-        `${API_BASE}/api/chat/stream`,
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          signal:
-            controller.signal,
-
-          body:JSON.stringify({
-
-            message,
-
-            history:
-              chat.messages
-                .slice(0,-2),
-
-            mode:
-              modeEl.value,
-
-            webSearch,
-
-            attachment:
-              attachedFile
-
-          })
-
-        }
-      );
-
-
-    if(!response.ok){
-
-      let errorData = {};
-
-      try{
-
-        errorData =
-          await response.json();
-
-      }catch{}
-
-      throw new Error(
-        errorData.error ||
-        `HTTP ${response.status}`
-      );
-
-    }
-
-
-    if(!response.body){
-
-      throw new Error(
-        "Browser tidak mendukung streaming."
-      );
-
-    }
-
-
-    const reader =
-      response.body.getReader();
-
-    const decoder =
-      new TextDecoder();
-
-    let buffer = "";
-
-    assistantBubble.innerHTML = "";
-
-
-    while(true){
-
-      const result =
-        await reader.read();
-
-      if(result.done){
-
-        break;
-
-      }
-
-
-      buffer +=
-        decoder.decode(
-          result.value,
-          {
-            stream:true
-          }
-        );
-
-
-      const events =
-        buffer.split("\n\n");
-
-      buffer =
-        events.pop();
-
-
-      for(const event of events){
-
-        const line =
-          event
-            .split("\n")
-            .find(
-              x =>
-                x.startsWith("data: ")
-            );
-
-        if(!line){
-
-          continue;
-
-        }
-
-
-        const payload =
-          line.substring(6);
-
-
-        if(payload === "[DONE]"){
-
-          continue;
-
-        }
-
-
-        let data;
-
-        try{
-
-          data =
-            JSON.parse(payload);
-
-        }catch{
-
-          continue;
-
-        }
-
-
-        if(data.type === "delta"){
-
-          chat.messages[
-            assistantIndex
-          ].content +=
-            data.text;
-
-          assistantBubble.innerHTML =
-            renderMarkdown(
-              chat.messages[
-                assistantIndex
-              ].content
-            );
-
-          scrollToBottom();
-
-        }
-
-
-        if(data.type === "error"){
-
-          throw new Error(
-            data.error ||
-            "AI streaming error"
-          );
-
-        }
-
-      }
-
-    }
-
-
-    if(
-      !chat.messages[
-        assistantIndex
-      ].content
-    ){
-
-      chat.messages[
-        assistantIndex
-      ].content =
-        "AI tidak mengembalikan teks.";
-
-    }
-
-
-    saveState();
-
-  }catch(error){
-
-    if(
-      error.name ===
-      "AbortError"
-    ){
-
-      if(
-        !chat.messages[
-          assistantIndex
-        ].content
-      ){
-
-        chat.messages[
-          assistantIndex
-        ].content =
-          "Generasi dihentikan.";
-
-      }
-
-      assistantBubble.innerHTML =
-        "<p>Generasi dihentikan.</p>";
-
-    }else{
-
-      chat.messages[
-        assistantIndex
-      ].content =
-        `Gagal terhubung ke AI: ${error.message}`;
-
-      assistantBubble.innerHTML = `
-
-        <p>
-          <strong style="color:#ff9fab">
-            Gagal:
-          </strong>
-          ${escapeHTML(error.message)}
-        </p>
-
-        <p style="color:#8da0b8;font-size:12px">
-          Pastikan server.js berjalan
-          di localhost:3000.
-        </p>
-
-      `;
-
-    }
-
-    saveState();
-
-  }finally{
-
-    controller = null;
-
-    sendBtn.disabled = false;
-
-    stopBtn.style.display =
-      "none";
-
-    attachedFile = null;
-
-    fileInput.value = "";
-
-    fileChip.style.display =
-      "none";
-
-  }
+return;
 
 }
 
 
-/* ============================================================
-   FILE UPLOAD
-   ============================================================ */
-
-fileInput.addEventListener(
-  "change",
-  async function(){
-
-    const file =
-      fileInput.files[0];
-
-    if(!file){
-
-      return;
-
-    }
-
-    try{
-
-      const text =
-        await file.text();
-
-      attachedFile = {
-
-        name:file.name,
-
-        text:
-          text.substring(
-            0,
-            50000
-          )
-
-      };
+const message =
+input.value.trim();
 
 
-      fileChip.style.display =
-        "flex";
+if(!message){
+
+return;
+
+}
 
 
-      fileChip.innerHTML = `
+if(!engine){
 
-        <span>
-          📎
-          ${escapeHTML(file.name)}
-          •
-          ${Math.round(file.size/1024)}
-          KB
-        </span>
+alert(
+"Fahrul AI belum aktif.\n\nKlik \"Aktifkan Fahrul AI\" terlebih dahulu."
+);
 
-        <button
-          class="remove-file"
-          id="removeFile">
-          ×
-        </button>
+return;
 
-      `;
+}
 
-    }catch(error){
 
-      alert(
-        "File tidak dapat dibaca."
-      );
+const chat =
+ensureChat();
 
-    }
 
-  }
+if(
+!chat.messages.length
+){
+
+chat.title =
+message.substring(
+0,
+55
+);
+
+}
+
+
+chat.messages.push({
+
+role:"user",
+
+content:message
+
+});
+
+
+addMessageToDOM(
+"user",
+message
 );
 
 
-fileChip.addEventListener(
-  "click",
-  function(event){
+input.value =
+"";
 
-    if(
-      event.target.id ===
-      "removeFile"
-    ){
+autoResize();
 
-      attachedFile = null;
 
-      fileInput.value = "";
+// Remove welcome if necessary.
+const oldWelcome =
+document.getElementById(
+"welcome"
+);
 
-      fileChip.style.display =
-        "none";
+if(oldWelcome){
 
-    }
+oldWelcome.remove();
 
-  }
+}
+
+
+const assistantBubble =
+addMessageToDOM(
+"assistant",
+""
 );
 
 
-/* ============================================================
-   WEB SEARCH
-   ============================================================ */
+assistantBubble.innerHTML = `
+<span class="typing">
+<i></i>
+<i></i>
+<i></i>
+</span>
+`;
 
-webBtn.addEventListener(
-  "click",
-  function(){
 
-    webSearch =
-      !webSearch;
+chat.messages.push({
 
-    webBtn.textContent =
-      `🌐 Web Search: ${
-        webSearch
-          ? "ON"
-          : "OFF"
-      }`;
+role:"assistant",
 
-    webBtn.classList.toggle(
-      "active",
-      webSearch
-    );
+content:""
 
-  }
+});
+
+
+const assistantIndex =
+chat.messages.length - 1;
+
+
+isGenerating = true;
+
+sendBtn.disabled = true;
+
+stopBtn.style.display =
+"inline-block";
+
+
+controller =
+new AbortController();
+
+
+try{
+
+const history =
+chat.messages
+.slice(
+0,
+assistantIndex
+)
+.slice(-12)
+.map(
+item=>({
+
+role:
+item.role,
+
+content:
+item.content
+
+})
 );
 
 
-/* ============================================================
-   TEXTAREA
-   ============================================================ */
+const messages = [
 
-input.addEventListener(
-  "input",
-  function(){
+{
 
-    input.style.height =
-      "auto";
+role:"system",
 
-    input.style.height =
-      Math.min(
-        input.scrollHeight,
-        180
-      ) + "px";
+content:
+getSystemPrompt()
 
-  }
+},
+
+...history.map(
+item=>({
+
+role:
+item.role,
+
+content:
+item.role === "user"
+? buildUserPrompt(
+item.content
+)
+: item.content
+
+})
+)
+
+];
+
+
+assistantBubble.innerHTML =
+"";
+
+
+const stream =
+await engine.chat.completions.create({
+
+messages,
+
+temperature:
+modeEl.value === "coding"
+? 0.2
+: 0.7,
+
+top_p:0.9,
+
+max_tokens:2048,
+
+stream:true
+
+});
+
+
+let fullText = "";
+
+
+for await(
+const chunk
+of stream
+){
+
+if(
+controller.signal.aborted
+){
+
+break;
+
+}
+
+
+const delta =
+chunk?.choices?.[0]?.delta?.content
+|| "";
+
+
+if(!delta){
+
+continue;
+
+}
+
+
+fullText +=
+delta;
+
+
+assistantBubble.innerHTML =
+renderMarkdown(
+fullText
 );
 
 
-input.addEventListener(
-  "keydown",
-  function(event){
+chat.messages[
+assistantIndex
+].content =
+fullText;
 
-    if(
-      event.key === "Enter" &&
-      !event.shiftKey
-    ){
 
-      event.preventDefault();
+scrollToBottom();
 
-      sendMessage();
+}
 
-    }
 
-  }
+if(
+!fullText.trim()
+){
+
+fullText =
+"Maaf, model tidak menghasilkan jawaban.";
+
+assistantBubble.innerHTML =
+renderMarkdown(
+fullText
 );
 
+chat.messages[
+assistantIndex
+].content =
+fullText;
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-
-sendBtn.addEventListener(
-  "click",
-  sendMessage
-);
+}
 
 
-newChatBtn.addEventListener(
-  "click",
-  newChat
-);
+saveState();
+
+}catch(error){
+
+if(
+error?.name === "AbortError"
+||
+controller?.signal.aborted
+){
+
+const text =
+"⏹️ Generasi dihentikan.";
+
+assistantBubble.innerHTML =
+renderMarkdown(text);
+
+chat.messages[
+assistantIndex
+].content =
+text;
+
+}else{
+
+console.error(error);
+
+const text =
+"❌ Terjadi error pada Fahrul AI:\n\n" +
+(error?.message || error);
+
+assistantBubble.innerHTML =
+renderMarkdown(text);
+
+chat.messages[
+assistantIndex
+].content =
+text;
+
+}
+
+saveState();
+
+}finally{
+
+isGenerating = false;
+
+sendBtn.disabled = false;
+
+stopBtn.style.display =
+"none";
+
+controller = null;
+
+}
+
+}
 
 
-clearChatBtn.addEventListener(
-  "click",
-  deleteCurrentChat
-);
-
+/* =========================================================
+STOP GENERATION
+========================================================= */
 
 stopBtn.addEventListener(
-  "click",
-  function(){
+"click",
+()=>{
 
-    if(controller){
+if(controller){
 
-      controller.abort();
+controller.abort();
 
-    }
+}
 
-  }
+}
 );
 
 
-/* ============================================================
-   SUGGESTIONS + COPY
-   ============================================================ */
+/* =========================================================
+ENTER SEND
+========================================================= */
 
-messagesEl.addEventListener(
-  "click",
-  function(event){
+input.addEventListener(
+"keydown",
+event=>{
 
-    const suggestion =
-      event.target.closest(
-        ".suggestion"
-      );
+if(
+event.key === "Enter"
+&&
+!event.shiftKey
+){
 
-    if(suggestion){
+event.preventDefault();
 
-      input.value =
-        suggestion.textContent.trim();
+sendMessage();
 
-      input.focus();
+}
 
-      input.dispatchEvent(
-        new Event("input")
-      );
-
-      return;
-
-    }
-
-
-    const copyButton =
-      event.target.closest(
-        ".copy-btn"
-      );
-
-    if(copyButton){
-
-      const code =
-        decodeURIComponent(
-          copyButton.dataset.code
-        );
-
-      navigator.clipboard
-        .writeText(code)
-        .then(function(){
-
-          const old =
-            copyButton.textContent;
-
-          copyButton.textContent =
-            "Tersalin ✓";
-
-          setTimeout(
-            function(){
-
-              copyButton.textContent =
-                old;
-
-            },
-            1300
-          );
-
-        });
-
-    }
-
-  }
+}
 );
 
 
-/* ============================================================
-   CHAT SELECT
-   ============================================================ */
+/* =========================================================
+AUTO RESIZE
+========================================================= */
 
-chatList.addEventListener(
-  "click",
-  function(event){
+function autoResize(){
 
-    const button =
-      event.target.closest(
-        "[data-chat-id]"
-      );
+input.style.height =
+"auto";
 
-    if(!button){
+input.style.height =
+Math.min(
+input.scrollHeight,
+180
+) + "px";
 
-      return;
+}
 
-    }
-
-    activeChatId =
-      button.dataset.chatId;
-
-    localStorage.setItem(
-      "ai_assistant_pro_active",
-      activeChatId
-    );
-
-    renderChatList();
-
-    renderMessages();
-
-    input.focus();
-
-  }
+input.addEventListener(
+"input",
+autoResize
 );
 
 
-/* ============================================================
-   INITIALIZATION
-   ============================================================ */
+/* =========================================================
+NEW CHAT
+========================================================= */
+
+newChatBtn.addEventListener(
+"click",
+()=>{
+
+createNewChat();
+
+}
+);
+
+
+/* =========================================================
+CLEAR CHAT
+========================================================= */
+
+clearChatBtn.addEventListener(
+"click",
+()=>{
+
+const chat =
+getActiveChat();
+
+if(!chat){
+
+return;
+
+}
+
+
+if(
+!confirm(
+"Hapus percakapan ini?"
+)
+){
+
+return;
+
+}
+
+
+chats =
+chats.filter(
+item =>
+item.id !== activeChatId
+);
+
+
+activeChatId =
+null;
+
+saveState();
+
+renderMessages();
+
+}
+);
+
+
+/* =========================================================
+COPY CODE
+========================================================= */
+
+document.addEventListener(
+"click",
+async event=>{
+
+const button =
+event.target.closest(
+".copy-btn"
+);
+
+if(!button){
+
+return;
+
+}
+
+
+try{
+
+const code =
+decodeURIComponent(
+button.dataset.code
+);
+
+
+await navigator.clipboard.writeText(
+code
+);
+
+
+const old =
+button.textContent;
+
+button.textContent =
+"Tersalin!";
+
+
+setTimeout(
+()=>{
+
+button.textContent =
+old;
+
+},
+1200
+);
+
+
+}catch(error){
+
+alert(
+"Gagal menyalin kode."
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+MODEL PANEL
+========================================================= */
+
+function openModelPanel(){
+
+modelPanel.classList.add(
+"active"
+);
+
+modelSelect.value =
+currentModel;
+
+}
+
+
+function closeModel(){
+
+modelPanel.classList.remove(
+"active"
+);
+
+}
+
+
+modelBtn.addEventListener(
+"click",
+openModelPanel
+);
+
+
+modelToolBtn.addEventListener(
+"click",
+openModelPanel
+);
+
+
+closeModelPanel.addEventListener(
+"click",
+closeModel
+);
+
+
+loadModelBtn.addEventListener(
+"click",
+async()=>{
+
+const model =
+modelSelect.value;
+
+await loadModel(
+model
+);
+
+settingsModel.textContent =
+getFriendlyModelName(
+model
+);
+
+}
+);
+
+
+/* =========================================================
+SETTINGS
+========================================================= */
+
+settingsBtn.addEventListener(
+"click",
+()=>{
+
+settingsModal.classList.add(
+"active"
+);
+
+}
+);
+
+
+closeSettings.addEventListener(
+"click",
+()=>{
+
+settingsModal.classList.remove(
+"active"
+);
+
+}
+);
+
+
+settingsModal.addEventListener(
+"click",
+event=>{
+
+if(
+event.target === settingsModal
+){
+
+settingsModal.classList.remove(
+"active"
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+RESET STORAGE
+========================================================= */
+
+resetStorage.addEventListener(
+"click",
+()=>{
+
+if(
+!confirm(
+"Yakin ingin menghapus seluruh riwayat chat?"
+)
+){
+
+return;
+
+}
+
+
+localStorage.removeItem(
+STORAGE_KEY
+);
+
+localStorage.removeItem(
+ACTIVE_KEY
+);
+
+chats = [];
+
+activeChatId =
+null;
 
 renderChatList();
 
 renderMessages();
 
-checkServer();
+settingsModal.classList.remove(
+"active"
+);
 
-input.focus();
+}
+);
+
+
+/* =========================================================
+START BUTTON
+========================================================= */
+
+startBtn.addEventListener(
+"click",
+async()=>{
+
+startBtn.disabled =
+true;
+
+startBtn.textContent =
+"⏳ Memuat Fahrul AI...";
+
+await loadModel(
+currentModel
+);
+
+if(engine){
+
+startBtn.textContent =
+"✓ Fahrul AI Aktif";
+
+}
+
+}
+);
+
+
+/* =========================================================
+INITIALIZE
+========================================================= */
+
+modelSelect.value =
+currentModel;
+
+settingsModel.textContent =
+getFriendlyModelName(
+currentModel
+);
+
+renderChatList();
+
+renderMessages();
+
+bindSuggestions();
+
+
+/* =========================================================
+BROWSER WEBGPU CHECK
+========================================================= */
+
+if(
+!("gpu" in navigator)
+){
+
+startBtn.disabled =
+true;
+
+startBtn.textContent =
+"WebGPU Tidak Tersedia";
+
+startProgress.classList.add(
+"active"
+);
+
+startProgressText.textContent =
+"Browser ini tidak menyediakan WebGPU. Gunakan Chrome/Edge terbaru.";
+
+setStatus(
+"WebGPU tidak tersedia",
+"error"
+);
+
+}
+
+
+/* =========================================================
+INITIAL STATUS
+========================================================= */
+
+if(
+navigator.gpu
+){
+
+setStatus(
+"Siap • Model belum dimuat"
+);
+
+}
+
+
+/* =========================================================
+EXPOSE DEBUG OBJECT
+========================================================= */
+
+window.FahrulAI = {
+
+name:
+"Fahrul AI",
+
+apiKey:
+FAHRUL_AI_KEY,
+
+getEngine:
+()=>engine,
+
+getModel:
+()=>currentModel,
+
+reload:
+()=>loadModel(
+currentModel
+),
+
+newChat:
+()=>createNewChat()
+
+};
 
 </script>
 
